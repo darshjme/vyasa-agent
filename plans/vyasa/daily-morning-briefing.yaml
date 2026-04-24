@@ -1,0 +1,21 @@
+id: vyasa-daily-morning-briefing
+owner_employee_id: vyasa
+schedule: "0 8 * * *"
+timezone: Asia/Kolkata
+enabled: true
+visibility: private
+description: >-
+  Managing Partner's 08:00 IST situation report. Three lines: open episodes,
+  overnight graph additions, active alerts.
+prompt: |
+  Compile a terse three-line morning briefing for the Managing Partner.
+
+  Line 1 — OPEN EPISODES: count of in-flight episodes from the last 24h with
+  the top two subject_tags.
+  Line 2 — OVERNIGHT GRAPH: net new Graphify nodes since 00:00 IST, broken
+  down by owner_employee_id (top three).
+  Line 3 — ALERTS: unresolved CRITICAL / HIGH findings from Kavach and Dr.
+  Reddy, newest first.
+
+  Hard cap 60 words total. No preamble. No closing flourish.
+deliver_to: "telegram:${VYASA_OWNER_CHAT_ID}"

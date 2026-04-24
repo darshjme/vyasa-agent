@@ -1,0 +1,27 @@
+id: dr-reddy-envato-license-health
+owner_employee_id: dr-reddy
+schedule: "0 */6 * * *"
+timezone: UTC
+enabled: true
+visibility: fleet
+description: >-
+  Every 6h Dr. Reddy verifies the Envato license-verification subsystem.
+  Writes a health Graphify node so operators can trace cache hit rate and
+  upstream outages without running the installer.
+prompt: |
+  Run the Envato buyer-license health probe.
+
+  Check and report:
+
+  - Cache freshness: count of license records with updated_at > now - 6h,
+    versus total active records.
+  - Cache hit rate over the last window.
+  - Upstream round-trip latency against api.envato.com (p50, p95) from the
+    three most recent synthetic probes.
+  - Fail-closed correctness: confirm zero records bypassed verification
+    because of upstream error (DEV_BYPASS must remain OFF).
+  - Any entries flagged for manual review.
+
+  End the report with an explicit status token on its own line: one of
+  HEALTHY, DEGRADED, or CRITICAL. Persist everything to the audit node.
+deliver_to: graph-node

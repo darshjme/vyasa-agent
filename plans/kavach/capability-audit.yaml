@@ -1,0 +1,27 @@
+id: kavach-capability-audit
+owner_employee_id: kavach
+schedule: "0 3 * * *"
+timezone: Asia/Kolkata
+enabled: true
+visibility: fleet
+description: >-
+  Nightly 03:00 IST capability-audit sweep. Kavach tails the fleet audit
+  log looking for anomalous tool usage, privilege-escalation attempts, and
+  capability drift between declared and exercised tools.
+prompt: |
+  Perform the nightly capability audit over the last 24 hours of fleet
+  activity.
+
+  Signals to surface:
+
+  - Any employee exercising a tool not declared in its allowed_tools.
+  - Any employee calling a plugin or MCP server outside its allowlist.
+  - Spikes in tool-call volume beyond the trailing 7-day p99 per employee.
+  - Repeated handoff refusals (same from -> to pair > 3 within 24h).
+  - Orphaned tool calls lacking a covering trace_id or Graphify evidence
+    node.
+
+  Classify every anomaly as INFO, WARN, or RISK. End with a single-sentence
+  executive summary. Persist the full audit as the Graphify risk node; no
+  chat delivery.
+deliver_to: graph-node

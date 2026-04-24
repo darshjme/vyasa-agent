@@ -1,0 +1,27 @@
+id: dr-bose-graph-compaction
+owner_employee_id: dr-bose
+schedule: "0 4 */3 * *"
+timezone: Asia/Kolkata
+enabled: true
+visibility: fleet
+description: >-
+  Dr. Bose runs the Graphify Compactor every 72 hours at 04:00 IST. Dedups
+  checksum collisions, collapses supersedes chains, archives TTL-expired
+  nodes, and emits a CompactionReport audit node.
+prompt: |
+  Run a full pass of the Graphify Compactor.
+
+  Procedure:
+
+  1. Scan all active nodes and deduplicate by checksum, keeping the
+     highest-confidence representative.
+  2. Collapse every supersedes chain so only the terminal active node is
+     kept and the superseded ancestors move to archived.
+  3. Archive every node whose ttl_days has elapsed since updated_at.
+  4. Emit a CompactionReport with trigger = "time" and the full scanned /
+     deduped / superseded_collapsed / archived_ttl counts.
+
+  Persist the report as the Graphify audit node summary. Never touch
+  fleet-visibility product or release nodes published within the last 72h
+  unless they are strict duplicates.
+deliver_to: graph-node

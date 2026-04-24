@@ -1,0 +1,27 @@
+id: dr-sarabhai-weekly-retro
+owner_employee_id: dr-sarabhai
+schedule: "0 21 * * 0"
+timezone: Asia/Kolkata
+enabled: true
+visibility: fleet
+description: >-
+  Sunday 21:00 IST week-in-review. Dr. Sarabhai summarises releases, P0/P1
+  incidents, scope changes, and partner sentiment into a single fleet-visible
+  Graphify node.
+prompt: |
+  Author the weekly partnership retrospective for the week ending today.
+
+  Structure (markdown, kept under 250 words):
+
+  1. Shipped — major releases, signed-off Playwright runs, published builds.
+  2. Incidents — every P0 or P1 fired this week, owning partner, resolution
+     state.
+  3. Scope drift — features added, deferred, or killed versus the Monday
+     plan.
+  4. Partner sentiment — morale signal from the last three Vyasa graph
+     queries per partner; flag anyone < 0.80 confidence.
+  5. Next week's sharpest risk — one sentence.
+
+  Persist the output verbatim as the Graphify audit node summary so the
+  whole fleet can query it.
+deliver_to: graph-node
