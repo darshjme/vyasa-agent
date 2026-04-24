@@ -61,6 +61,7 @@ jobs:
   publish-pypi:
     name: publish to PyPI (trusted publisher)
     needs: build
+    if: ${{ !contains(github.ref, '-') && !contains(github.ref_name, 'a') && !contains(github.ref_name, 'b') && !contains(github.ref_name, 'rc') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
@@ -87,6 +88,7 @@ jobs:
   github-release:
     name: create GitHub release
     needs: [build, publish-pypi]
+    if: ${{ always() && needs.build.result == 'success' && (needs.publish-pypi.result == 'success' || needs.publish-pypi.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -140,4 +142,4 @@ jobs:
             dist/SHA256SUMS.txt
           fail_on_unmatched_files: true
           draft: false
-          prerelease: false
+          prerelease: ${{ contains(github.ref_name, 'a') || contains(github.ref_name, 'b') || contains(github.ref_name, 'rc') || contains(github.ref, '-') }}
