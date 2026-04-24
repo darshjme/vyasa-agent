@@ -40,11 +40,15 @@ jobs:
       - name: Sync dependencies
         run: uv sync --all-extras --dev
 
-      - name: Run pytest with coverage
+      - name: Run pytest with coverage (unit + integration)
         env:
           PYTHONDONTWRITEBYTECODE: "1"
           PYTHONUNBUFFERED: "1"
-        run: uv run pytest -n auto --cov=vyasa_agent --cov-report=xml --cov-report=term
+          # Keeps AIAgent on the reversed-text stub so integration tests stay offline.
+          VYASA_STUB_BRIDGE: "1"
+        # Empty ``-m`` expression overrides the unit-only default in pyproject.toml
+        # so CI exercises both suites in parallel.
+        run: uv run pytest -n auto -m "" --cov=vyasa_agent --cov-report=xml --cov-report=term
 
       - name: Upload coverage artefact
         if: always()

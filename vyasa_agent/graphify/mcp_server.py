@@ -16,8 +16,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .store import GraphStore, PIILeakError, PIIScrubber
-from .types import GraphNode
+from .pii import PIIScrubber
+from .store import GraphStore
+from .types import Node, PIILeakError
 
 _MCP_MISSING = (
     "The 'mcp' package is required to run the Graphify MCP server. "
@@ -167,7 +168,7 @@ def build_server(db_path: Path) -> Server:
                 )
                 return _as_text([r.model_dump() for r in rows])
             if name == "graph_write":
-                node = GraphNode.model_validate(arguments["node_payload"])
+                node = Node.model_validate(arguments["node_payload"])
                 if not scrubber.check_before_write(node):
                     raise PIILeakError(f"PII detected in node {node.id}; write refused.")
                 saved = store.write(node, author_employee_id=arguments["author_employee_id"])

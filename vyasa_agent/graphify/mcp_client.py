@@ -13,8 +13,9 @@ from contextlib import AsyncExitStack
 from pathlib import Path
 from typing import Any, Literal
 
-from .store import GraphStore, PIILeakError, PIIScrubber
-from .types import GraphNode
+from .pii import PIIScrubber
+from .store import GraphStore
+from .types import Node, PIILeakError
 
 Transport = Literal["inproc", "stdio"]
 
@@ -119,7 +120,7 @@ class GraphifyClient:
     ) -> dict[str, Any]:
         if self._transport == "inproc":
             assert self._store is not None
-            node = GraphNode.model_validate(node_payload)
+            node = Node.model_validate(node_payload)
             if not self._scrubber.check_before_write(node):
                 raise PIILeakError(f"PII detected in node {node.id}; write refused.")
             saved = self._store.write(node, author_employee_id=author_employee_id)
