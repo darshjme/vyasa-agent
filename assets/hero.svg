@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" role="img" aria-labelledby="heroTitle heroDesc">
+  <title id="heroTitle">Vyasa Agent — 28-partner self-hosted fleet</title>
+  <desc id="heroDesc">A continuous ivory quill-stroke flows from a sage's quill on the left across a midnight-teal field, branches into a constellation of 28 nodes grouped as the Vyasa 18 cluster and the Graymatter 10 cluster, and terminates inside a phone silhouette on the right whose ivory-glowing screen carries the tagline: Your ops team, 28-strong, on your phone.</desc>
+
+  <!-- background -->
+  <rect width="1200" height="400" fill="#0F2E3D"/>
+  <rect y="264" width="1200" height="136" fill="#0B2431" opacity="0.55"/>
+
+  <!-- wordmark top-left -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#F6F1E5">
+    <text x="40" y="46" font-size="20" letter-spacing="2.5">VYASA AGENT</text>
+    <line x1="40" y1="55" x2="188" y2="55" stroke="#E28822" stroke-width="1"/>
+    <text x="40" y="72" font-size="10" fill-opacity="0.55" letter-spacing="1.8">28-PARTNER SELF-HOSTED FLEET</text>
+  </g>
+
+  <!-- bottom-right attribution -->
+  <text x="1160" y="378" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#F6F1E5" fill-opacity="0.55" letter-spacing="1.2">GRAYMATTER ONLINE LLP</text>
+
+  <!-- corner marks -->
+  <g stroke="#F6F1E5" stroke-width="1" stroke-linecap="round" opacity="0.22" fill="none">
+    <path d="M24 24 L24 52 M24 24 L52 24"/>
+    <path d="M1176 24 L1176 52 M1176 24 L1148 24"/>
+    <path d="M24 376 L24 348 M24 376 L52 376"/>
+    <path d="M1176 376 L1176 348 M1176 376 L1148 376"/>
+  </g>
+
+  <!-- quill (left third) -->
+  <g transform="translate(72,148)">
+    <!-- feather body -->
+    <path d="M0 0 C 16 -38 50 -66 92 -78 C 74 -52 52 -28 38 6 Z"
+          fill="#F6F1E5" fill-opacity="0.08"
+          stroke="#F6F1E5" stroke-width="2" stroke-linejoin="round"/>
+    <!-- feather barbs -->
+    <g stroke="#F6F1E5" stroke-width="1" stroke-linecap="round" stroke-opacity="0.7" fill="none">
+      <path d="M 90 -76 C 78 -64 66 -48 54 -30"/>
+      <path d="M 80 -68 C 68 -56 58 -44 48 -22"/>
+      <path d="M 68 -58 C 58 -46 50 -34 42 -14"/>
+      <path d="M 54 -44 C 46 -32 40 -20 36 -4"/>
+    </g>
+    <!-- shaft -->
+    <path d="M 38 6 L 52 30" stroke="#F6F1E5" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- saffron nib -->
+    <path d="M 52 30 L 62 46 L 54 50 L 46 34 Z" fill="#E28822"/>
+    <!-- ink drop -->
+    <circle cx="60" cy="54" r="3" fill="#E28822"/>
+  </g>
+
+  <!-- ONE continuous ivory gesture: nib → across → through clusters → into phone screen -->
+  <path d="M 132 202
+           C 186 212, 240 206, 288 214
+           C 332 222, 372 210, 420 208
+           C 470 206, 514 220, 560 220
+           C 608 220, 650 206, 692 204
+           C 736 202, 778 216, 818 216
+           C 856 216, 888 206, 918 202
+           C 946 198, 968 206, 984 224
+           C 1000 244, 1012 260, 1022 272"
+        fill="none" stroke="#F6F1E5" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- cluster labels -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#F6F1E5" fill-opacity="0.55" font-size="10" letter-spacing="2.2">
+    <text x="348" y="132">VYASA · 18</text>
+    <line x1="348" y1="140" x2="438" y2="140" stroke="#F6F1E5" stroke-opacity="0.35" stroke-width="0.75"/>
+    <text x="668" y="132">GRAYMATTER · 10</text>
+    <line x1="668" y1="140" x2="776" y2="140" stroke="#F6F1E5" stroke-opacity="0.35" stroke-width="0.75"/>
+  </g>
+
+  <!-- connective tendrils (subtle constellation) -->
+  <g fill="none" stroke="#F6F1E5" stroke-opacity="0.22" stroke-width="1">
+    <!-- Vyasa 18 internal -->
+    <path d="M 262 160 Q 288 176 310 158"/>
+    <path d="M 310 158 Q 336 176 354 160"/>
+    <path d="M 354 160 Q 380 180 404 158"/>
+    <path d="M 404 158 Q 428 182 452 164"/>
+    <path d="M 452 164 Q 478 188 504 170"/>
+    <path d="M 280 196 Q 310 208 336 194"/>
+    <path d="M 336 194 Q 366 212 392 196"/>
+    <path d="M 392 196 Q 420 216 448 200"/>
+    <path d="M 448 200 Q 476 220 502 204"/>
+    <path d="M 298 236 Q 326 248 352 236"/>
+    <path d="M 352 236 Q 384 254 412 238"/>
+    <path d="M 412 238 Q 442 254 472 242"/>
+    <path d="M 472 242 Q 502 258 530 246"/>
+    <!-- Graymatter internal -->
+    <path d="M 604 168 Q 632 182 656 164"/>
+    <path d="M 656 164 Q 684 180 712 168"/>
+    <path d="M 712 168 Q 742 186 768 170"/>
+    <path d="M 620 216 Q 652 232 680 216"/>
+    <path d="M 680 216 Q 710 232 742 218"/>
+    <path d="M 742 218 Q 776 236 806 220"/>
+    <!-- bridge from Vyasa to Graymatter -->
+    <path d="M 530 246 Q 570 222 604 214" stroke-opacity="0.3"/>
+    <path d="M 504 170 Q 550 184 604 168" stroke-opacity="0.3"/>
+    <!-- Graymatter to phone -->
+    <path d="M 806 220 Q 860 216 918 202" stroke-opacity="0.3"/>
+  </g>
+
+  <!-- VYASA 18: 14 slate + 4 saffron gatekeepers -->
+  <!-- slate non-accent nodes -->
+  <g fill="#9AA8AE" stroke="#0F2E3D" stroke-width="1">
+    <circle cx="262" cy="160" r="5"/>
+    <circle cx="310" cy="158" r="5"/>
+    <circle cx="354" cy="160" r="5"/>
+    <circle cx="404" cy="158" r="5"/>
+    <circle cx="452" cy="164" r="5"/>
+    <circle cx="280" cy="196" r="5"/>
+    <circle cx="336" cy="194" r="5"/>
+    <circle cx="392" cy="196" r="5"/>
+    <circle cx="448" cy="200" r="5"/>
+    <circle cx="298" cy="236" r="5"/>
+    <circle cx="352" cy="236" r="5"/>
+    <circle cx="412" cy="238" r="5"/>
+    <circle cx="472" cy="242" r="5"/>
+    <circle cx="530" cy="246" r="5"/>
+  </g>
+  <!-- saffron accents in Vyasa cluster -->
+  <g fill="#E28822">
+    <circle cx="502" cy="204" r="6"/>
+    <circle cx="504" cy="170" r="6"/>
+    <circle cx="382" cy="260" r="6"/>
+    <circle cx="438" cy="186" r="6"/>
+  </g>
+
+  <!-- GRAYMATTER 10: 6 slate + 4 saffron gatekeepers -->
+  <g fill="#9AA8AE" stroke="#0F2E3D" stroke-width="1">
+    <circle cx="604" cy="168" r="5"/>
+    <circle cx="656" cy="164" r="5"/>
+    <circle cx="712" cy="168" r="5"/>
+    <circle cx="620" cy="216" r="5"/>
+    <circle cx="680" cy="216" r="5"/>
+    <circle cx="806" cy="220" r="5"/>
+  </g>
+  <g fill="#E28822">
+    <circle cx="604" cy="214" r="6"/>
+    <circle cx="742" cy="218" r="6"/>
+    <circle cx="768" cy="170" r="6"/>
+    <circle cx="848" cy="200" r="6"/>
+  </g>
+
+  <!-- phone silhouette (right edge) -->
+  <g transform="translate(942,74)">
+    <!-- body -->
+    <rect x="0" y="0" width="178" height="300" rx="24" ry="24" fill="#1A1A1A" stroke="#F6F1E5" stroke-width="1.5" stroke-opacity="0.85"/>
+    <!-- screen bezel -->
+    <rect x="10" y="36" width="158" height="242" rx="8" ry="8" fill="#0F2E3D" stroke="#F6F1E5" stroke-opacity="0.35" stroke-width="0.75"/>
+    <!-- notch -->
+    <rect x="68" y="14" width="42" height="8" rx="4" ry="4" fill="#0F2E3D" stroke="#F6F1E5" stroke-opacity="0.45" stroke-width="0.75"/>
+    <circle cx="120" cy="18" r="1.6" fill="#F6F1E5" fill-opacity="0.55"/>
+    <!-- side button -->
+    <rect x="178" y="72" width="3" height="36" fill="#F6F1E5" fill-opacity="0.35"/>
+    <!-- home indicator -->
+    <rect x="70" y="286" width="38" height="3" rx="1.5" ry="1.5" fill="#F6F1E5" fill-opacity="0.55"/>
+    <!-- ivory screen glow -->
+    <rect x="14" y="40" width="150" height="234" rx="6" ry="6" fill="#F6F1E5" fill-opacity="0.06"/>
+    <!-- soft inner glow band -->
+    <rect x="22" y="110" width="134" height="92" rx="6" ry="6" fill="#F6F1E5" fill-opacity="0.04"/>
+
+    <!-- tagline dead-centre of glow -->
+    <g font-family="Georgia, 'Times New Roman', serif" fill="#F6F1E5" text-anchor="middle">
+      <text x="89" y="148" font-size="13" letter-spacing="1">Your ops team,</text>
+      <text x="89" y="168" font-size="13" letter-spacing="1">28-strong,</text>
+      <text x="89" y="188" font-size="13" letter-spacing="1">on your phone.</text>
+      <line x1="56" y1="202" x2="122" y2="202" stroke="#E28822" stroke-width="1"/>
+      <text x="89" y="220" font-size="9" fill-opacity="0.6" letter-spacing="2.2">LISTENS · REMEMBERS · ASSIGNS</text>
+    </g>
+
+    <!-- terminating pulse node (gesture lands here) -->
+    <circle cx="80" cy="198" r="7" fill="#E28822"/>
+    <circle cx="80" cy="198" r="13" fill="none" stroke="#E28822" stroke-opacity="0.45" stroke-width="1"/>
+    <circle cx="80" cy="198" r="19" fill="none" stroke="#E28822" stroke-opacity="0.2" stroke-width="1"/>
+  </g>
+</svg>

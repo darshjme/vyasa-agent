@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Aryabhata — Tier 2 Architecture">
+  <title>Aryabhata</title>
+  <circle cx="32" cy="32" r="30" fill="#0F2E3D"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#F6F1E5" stroke-width="1" stroke-opacity="0.35"/>
+  <text x="32" y="40" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" fill="#F6F1E5" letter-spacing="1">AR</text>
+</svg>

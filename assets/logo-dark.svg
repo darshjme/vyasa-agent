@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logoDarkTitle logoDarkDesc">
+  <title id="logoDarkTitle">Vyasa Agent Logo — Dark</title>
+  <desc id="logoDarkDesc">A saffron quill nib inside an ivory circular frame on a midnight-teal background.</desc>
+  <rect width="512" height="512" fill="#0F2E3D"/>
+  <circle cx="256" cy="256" r="208" fill="none" stroke="#F6F1E5" stroke-width="10"/>
+  <circle cx="256" cy="256" r="188" fill="none" stroke="#F6F1E5" stroke-width="2" stroke-opacity="0.35"/>
+  <path d="M 196 160 L 324 296 L 296 340 L 260 328 L 230 280 Z" fill="#E28822"/>
+  <line x1="256" y1="308" x2="256" y2="360" stroke="#F6F1E5" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="256" cy="366" r="6" fill="#E28822"/>
+</svg>
