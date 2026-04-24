@@ -46,8 +46,10 @@ ALLOWLIST=(
   "tests/fixtures/white_label_allowed_examples/"
   "scripts/white-label-check.sh"
   "scripts/rename-sweep.sh"
+  "scripts/fetch-vendor.sh"
   "CLAUDE.md"
   "README.md"
+  "vendor/vyasa_internals/NOTICE.md"
 )
 
 # ---------------------------------------------------------------------------
@@ -57,6 +59,7 @@ ALLOWLIST=(
 # ---------------------------------------------------------------------------
 SCAN_PATHS=(
   "vyasa_agent"
+  "vendor/vyasa_internals"
   "scripts"
   ".github"
   "docs"

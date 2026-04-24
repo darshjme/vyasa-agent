@@ -85,6 +85,8 @@ tmp/
 release-artifacts/
 envato-bundle/
 
-# Vendored upstream — excluded from source distribution; fetched via
-# scripts/fetch-vendor.sh at build time to keep white-label check clean.
-vendor/hermes_core/
+# Vendored upstream — committed under a renamed namespace at
+# vendor/vyasa_internals/, so the tree ships with the source. Ignore only
+# the Python caches / byte-compiled artefacts under it.
+vendor/**/__pycache__/
+vendor/**/*.pyc

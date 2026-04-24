@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vyasa-agent"
-version = "0.1.0"
+version = "0.1.0a1"
 description = "A 28-partner self-hosted agent fleet, addressable from your phone."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -85,12 +85,13 @@ Issues = "https://github.com/darshjme/vyasa-agent/issues"
 Changelog = "https://github.com/darshjme/vyasa-agent/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["vyasa_agent*"]
-exclude = ["tests*", "vendor*"]
+where = [".", "vendor"]
+include = ["vyasa_agent*", "vyasa_internals*"]
+exclude = ["tests*"]
 
 [tool.setuptools.package-data]
 vyasa_agent = ["admin_panel/static/**/*", "graphify/schema/*.sql"]
+vyasa_internals = ["NOTICE.md"]
 
 [tool.ruff]
 line-length = 100
@@ -103,7 +104,13 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
-addopts = "-ra --strict-markers"
+# Default run skips the ``integration`` marker so ``pytest`` stays unit-only.
+# Opt in explicitly via ``pytest -m integration`` or run everything in CI with
+# ``pytest -n auto -m ""`` (empty expression overrides the default).
+addopts = "-ra --strict-markers -m 'not integration'"
+markers = [
+    "integration: golden-path suite booting a real fleet with mocked adapters",
+]
 
 [tool.uv]
 exclude-newer = "7 days"
