@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: Apache-2.0
+# Vyasa Agent — local / self-host compose stack.
+# Pin both images; qdrant version matches Dr. Rao's memory design.
+
+services:
+  vyasa:
+    image: ghcr.io/darshjme/vyasa-agent:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vyasa
+    restart: unless-stopped
+    user: "10000:10000"
+    environment:
+      VYASA_HOME: /var/lib/vyasa
+      VYASA_GATEWAY_HOST: 0.0.0.0
+      VYASA_GATEWAY_PORT: "8644"
+      VYASA_ADMIN_PORT: "8645"
+      VYASA_QDRANT_URL: http://qdrant:6333
+    ports:
+      - "127.0.0.1:8644:8644"
+      - "127.0.0.1:8645:8645"
+    volumes:
+      - vyasa_home:/var/lib/vyasa
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8644/healthz >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.5
+    container_name: vyasa-qdrant
+    restart: unless-stopped
+    environment:
+      QDRANT__SERVICE__HTTP_PORT: "6333"
+      QDRANT__SERVICE__GRPC_PORT: "6334"
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  vyasa_home:
+    driver: local
+  qdrant_storage:
+    driver: local

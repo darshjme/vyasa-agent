@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: Apache-2.0
+name: envato-bundle
+
+on:
+  push:
+    tags: ["v*-envato"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version tag to bundle (e.g. v0.1.0-envato)"
+        required: true
+
+concurrency:
+  group: envato-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bundle:
+    name: build CodeCanyon ZIP
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          VERSION="${TAG#v}"
+          VERSION="${VERSION%-envato}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Make scripts executable
+        run: chmod +x scripts/envato-bundle.sh scripts/white-label-check.sh
+
+      - name: Build Envato ZIP
+        env:
+          VYASA_VERSION: ${{ steps.version.outputs.version }}
+        run: bash scripts/envato-bundle.sh
+
+      - name: Upload bundle as workflow artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: envato-bundle
+          path: dist/vyasa-agent-*-envato.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Attach to GitHub release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          files: dist/vyasa-agent-*-envato.zip
+          fail_on_unmatched_files: true

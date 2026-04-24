@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: Apache-2.0
+name: white-label-check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: wlc-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: brand-string scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Make script executable
+        run: chmod +x scripts/white-label-check.sh
+
+      - name: Run white-label scan
+        run: bash scripts/white-label-check.sh
