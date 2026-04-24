@@ -14,8 +14,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, ConfigDict, Field
 
-
-from ..deps import get_settings_store, require_admin
+from ..deps import get_fleet_manager, get_settings_store, require_admin
 
 
 router = APIRouter()
@@ -52,6 +51,7 @@ async def upsert_setting(
     body: UpsertBody,
     auth: dict[str, str] = Depends(require_admin),
     store: Any = Depends(get_settings_store),
+    fleet: Any = Depends(get_fleet_manager),
 ) -> dict[str, Any]:
     actor = auth.get("subject", "admin")
     stored = store.set(
@@ -61,6 +61,16 @@ async def upsert_setting(
         section=body.section,
         schema=body.field_schema,
     )
+
+    # Fan the change out to every registered overlay subscriber (fleet,
+    # channel adapters, branding) so the new value takes effect without an
+    # app restart.  The overlay swallows subscriber exceptions.
+    overlay = getattr(fleet, "overlay", None)
+    if overlay is not None:
+        notify = getattr(overlay, "notify_change", None)
+        if callable(notify):
+            notify(body.key, body.value)
+
     return {
         "key": stored["key"],
         "section": stored["section"],
