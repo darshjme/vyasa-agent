@@ -24,6 +24,14 @@ def compute_checksum(node: Node) -> str:
         ``key_claims`` are deliberately ignored so cosmetic edits
         (e.g. ``updated_by`` or ``confidence_score``) do not break
         dedup.
+
+    TODO(Dharma HIGH): two nodes that share ``source_path`` and
+    ``key_claims`` but carry different ``summary`` or ``entities`` will
+    hash to the same checksum and dedup against each other. That is the
+    intended v0.1 behaviour per design-03 §6 (claims are the stable
+    identity), but it is not collision-safe against adversarial inputs.
+    Consider folding ``summary`` into the canonical payload if the
+    semantic-recall layer starts keying on it.
     """
 
     payload = {

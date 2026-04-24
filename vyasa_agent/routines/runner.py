@@ -167,6 +167,12 @@ class RoutineRunner:
     async def _fire(
         self, r: Routine, *, trigger: str, payload: dict[str, Any] | None = None,
     ) -> RoutineFire:
+        # TODO(Dharma HIGH): ``payload`` here comes from an external webhook
+        # and is placed verbatim into ``meta["webhook_payload"]``. Downstream
+        # prompt templates that interpolate ``metadata`` into the model
+        # context are vulnerable to prompt injection via a crafted body.
+        # Either sanitise to a whitelisted shape here, or render into the
+        # prompt via a structured section the model treats as untrusted.
         meta: dict[str, Any] = {"routine_id": r.id, "trigger": trigger}
         if payload:
             meta["webhook_payload"] = payload

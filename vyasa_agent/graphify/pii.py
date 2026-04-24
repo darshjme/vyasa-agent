@@ -163,14 +163,24 @@ class PIIScrubber:
     # strict gate
     # ------------------------------------------------------------------ #
 
-    def check_before_write(self, summary: str, key_claims: list[str]) -> bool:
+    def check_before_write(
+        self,
+        summary: str,
+        key_claims: list[str],
+        *,
+        entities: list[str] | None = None,
+        symbols: list[str] | None = None,
+    ) -> bool:
         """Raise :class:`PIILeakError` if any PII pattern still matches.
 
         Returns ``True`` when the payload is clean so call sites can use
-        the result as an assertion-style boolean too.
+        the result as an assertion-style boolean too. ``entities`` and
+        ``symbols`` are optional extra fields that, when present, are
+        scanned too — a node with an email address dropped into
+        ``entities`` was previously able to slip past the gate.
         """
 
-        fragments = [summary, *key_claims]
+        fragments = [summary, *key_claims, *(entities or []), *(symbols or [])]
         offenders: list[str] = []
         for fragment in fragments:
             for kind, pattern in _SCAN_ORDER:

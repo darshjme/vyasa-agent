@@ -179,9 +179,14 @@ def build_server(db_path: Path) -> Server:
                 return _as_text([r.model_dump() for r in rows])
             if name == "graph_write":
                 node = Node.model_validate(arguments["node_payload"])
-                # PIIScrubber gates on the text surfaces only; unpack so the
-                # scrubber never has to reach into a pydantic model.
-                scrubber.check_before_write(node.summary, node.key_claims)
+                # PIIScrubber gates on every text-bearing surface; unpack so
+                # the scrubber never has to reach into a pydantic model.
+                scrubber.check_before_write(
+                    node.summary,
+                    node.key_claims,
+                    entities=node.entities,
+                    symbols=node.symbols,
+                )
                 node.pii_scrubbed = True
                 stored_id = await store.upsert_node(node)
                 saved = await store.get_node(stored_id)

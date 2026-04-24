@@ -143,6 +143,10 @@ class FleetManager:
     async def shutdown(self) -> None:
         """Drain all actors (30 s), then cancel any still running."""
         if not self._actors:
+            # Even with zero actors we must flip the boot flag so a
+            # subsequent ``boot`` call is accepted — otherwise an empty
+            # fleet gets stuck in "already booted" state forever.
+            self._booted = False
             return
 
         async def _drain(actor: EmployeeActor) -> None:

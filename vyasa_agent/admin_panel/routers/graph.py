@@ -37,6 +37,12 @@ async def graph_query(
     _auth: dict[str, str] = Depends(require_admin),
     store: Any = Depends(get_graph_store),
 ) -> dict[str, Any]:
+    # TODO(Dharma HIGH): call signature is ``query(intent=..., k=...)`` but
+    # the real ``GraphStore.query`` takes a single ``QueryFilters`` arg and
+    # is async. Tests get by with duck-typed mocks; against the real store
+    # this endpoint TypeErrors. Reconcile to
+    # ``await store.query(QueryFilters(intent=..., limit=k))`` when the
+    # admin Memory Browser ships.
     query_fn = getattr(store, "query", None)
     if not callable(query_fn):
         return {"nodes": []}

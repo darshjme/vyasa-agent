@@ -236,6 +236,16 @@ class GraphStore:
                     (node.checksum,),
                 ).fetchone()
                 if existing is not None:
+                    # Dedup hit: refresh updated_at so "re-observation" of
+                    # an unchanged node still records that we saw it. The
+                    # checksum is content-only (source_path + key_claims),
+                    # so updating updated_at never perturbs the hash.
+                    cursor.execute(
+                        "UPDATE nodes SET updated_at = ?, "
+                        "       updated_by = COALESCE(?, updated_by) "
+                        "WHERE id = ?",
+                        (node.updated_at, node.updated_by, existing["id"]),
+                    )
                     cursor.execute("COMMIT")
                     return str(existing["id"])
 

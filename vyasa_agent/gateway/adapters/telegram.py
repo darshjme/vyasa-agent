@@ -171,7 +171,7 @@ class TelegramAdapter(ChannelAdapter):
         try:
             from telegram.error import RetryAfter  # type: ignore
         except Exception:  # pragma: no cover
-            RetryAfter = _MissingRetryAfter  # type: ignore[assignment]
+            RetryAfter = _MissingRetryAfterError  # type: ignore[assignment]
         backoff = 1.0
         while True:
             try:
@@ -206,7 +206,7 @@ class TelegramAdapter(ChannelAdapter):
         ))
 
 
-class _MissingRetryAfter(Exception):
+class _MissingRetryAfterError(Exception):
     """Sentinel used when ``telegram.error`` is not importable (test stubs)."""
 
 

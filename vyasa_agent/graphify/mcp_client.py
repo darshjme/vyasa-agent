@@ -134,7 +134,12 @@ class GraphifyClient:
             # Strict PII gate: raises PIILeakError from the scrubber when
             # any residue survives. Successful gate also stamps updated_by
             # so the audit trail records who requested the write.
-            self._scrubber.check_before_write(node.summary, node.key_claims)
+            self._scrubber.check_before_write(
+                node.summary,
+                node.key_claims,
+                entities=node.entities,
+                symbols=node.symbols,
+            )
             node.pii_scrubbed = True
             if not node.updated_by:
                 node.updated_by = author_employee_id

@@ -111,4 +111,4 @@ class RateLimiter:
         self._last = 0.0
 
 
-__all__ = ["StreamChunker", "RateLimiter"]
+__all__ = ["RateLimiter", "StreamChunker"]

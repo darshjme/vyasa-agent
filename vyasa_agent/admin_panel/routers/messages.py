@@ -119,6 +119,9 @@ async def handoff(
     _auth: dict[str, str] = Depends(require_gateway),
     fleet: Any = Depends(get_fleet_manager),
 ) -> dict[str, Any]:
+    # TODO(Dharma HIGH): body.deadline_ms is validated but never enforced.
+    # Wrap the handoff call in asyncio.wait_for(..., timeout=deadline_ms/1000)
+    # so a slow downstream doesn't block the gateway past the caller's budget.
     trace_id = _trace(request)
     handoff_id = f"hof_{uuid.uuid4().hex[:20]}"
     start = _utcnow()

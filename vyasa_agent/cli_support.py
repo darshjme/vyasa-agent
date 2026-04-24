@@ -248,8 +248,16 @@ class GracefulShutdown:
             try:
                 loop.add_signal_handler(sig, self._trip)
             except NotImplementedError:
-                # Windows: fall back to signal.signal — close enough for dev.
-                signal.signal(sig, lambda *_: self._trip())
+                # Windows: loop.add_signal_handler is not supported.
+                # Fall back to signal.signal for the signals Windows
+                # actually delivers (SIGINT, SIGBREAK). SIGTERM on
+                # Windows raises ValueError because only SIGINT/SIGBREAK
+                # are supported in the console handler; guard so the
+                # install path stays quiet on that platform.
+                try:
+                    signal.signal(sig, lambda *_: self._trip())
+                except (ValueError, OSError):
+                    continue
         self._installed = True
 
     def _trip(self) -> None:

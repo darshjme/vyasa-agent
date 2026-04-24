@@ -266,7 +266,13 @@ def main(argv: list[str] | None = None) -> int:
     except RuntimeFailure as exc:
         _stdout().print(f"[red]runtime failure:[/red] {exc}"); return 2
     except SystemExit as exc:
-        return int(exc.code) if isinstance(exc.code, int) else 0
+        # Fire uses SystemExit with a string payload to carry help text or
+        # error messages. A string payload means a user-facing error;
+        # return 1 so the shell can tell success from failure (previously
+        # we returned 0 for any non-int, masking Fire's own argparse errors).
+        if isinstance(exc.code, int):
+            return exc.code
+        return 0 if exc.code is None else 1
     except KeyboardInterrupt:
         return 0
     except Exception as exc:  # pragma: no cover

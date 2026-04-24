@@ -99,6 +99,12 @@ class SessionAuth:
     The cookie payload is ``<subject>.<issued_at>.<hmac>``. We intentionally
     avoid ``itsdangerous`` as a hard dependency — the extra ``admin`` group
     pulls it in, but the base install works without.
+
+    TODO(Dharma HIGH): bind the CSRF token to the session subject via HMAC
+    (``csrf = HMAC(secret, subject||issued_at)``) so a cookie-tossing or
+    XSS-on-a-sibling-subdomain attacker cannot forge a valid pair. The
+    current double-submit only compares cookie to header, which is the
+    weak variant of the pattern.
     """
 
     def __init__(
