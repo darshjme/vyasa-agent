@@ -18,7 +18,7 @@ from typing import Any
 
 from .pii import PIIScrubber
 from .store import GraphStore
-from .types import Node, PIILeakError
+from .types import Node, PIILeakError, QueryFilters
 
 _MCP_MISSING = (
     "The 'mcp' package is required to run the Graphify MCP server. "
@@ -150,31 +150,47 @@ def build_server(db_path: Path) -> Server:
 
     @server.call_tool()
     async def _dispatch(name: str, arguments: dict[str, Any]) -> list[TextContent]:
-        _assert_employee_sig(dict(os.environ))
+        # Auth + dispatch live in the same try/except so AuthError flows
+        # through the structured JSON response path rather than MCP's
+        # default isError=True text wrapper (which breaks client parsers).
         try:
+            _assert_employee_sig(dict(os.environ))
             if name == "graph_read":
-                node = store.read(arguments["node_id"])
+                node = await store.get_node(arguments["node_id"])
                 return _as_text(node.model_dump() if node else None)
             if name == "graph_query":
-                rows = store.query(
+                visibility = arguments.get("visibility_scope", "team")
+                # The wire schema takes a single enum value; the store takes
+                # a list, so project the scalar into a single-element scope.
+                visibility_scope = [visibility] if isinstance(visibility, str) else list(
+                    visibility or []
+                )
+                filters = QueryFilters(
                     intent=arguments["intent"],
-                    visibility_scope=arguments.get("visibility_scope", "team"),
+                    visibility_scope=visibility_scope or None,
                     owner_employee_id=arguments.get("owner_employee_id"),
                     episode_id=arguments.get("episode_id"),
-                    tags=arguments.get("tags", []),
+                    tags=list(arguments.get("tags") or []),
                     since=arguments.get("since"),
                     limit=int(arguments.get("limit", 20)),
                     min_confidence=float(arguments.get("min_confidence", 0.0)),
                 )
+                rows = await store.query(filters)
                 return _as_text([r.model_dump() for r in rows])
             if name == "graph_write":
                 node = Node.model_validate(arguments["node_payload"])
-                if not scrubber.check_before_write(node):
-                    raise PIILeakError(f"PII detected in node {node.id}; write refused.")
-                saved = store.write(node, author_employee_id=arguments["author_employee_id"])
+                # PIIScrubber gates on the text surfaces only; unpack so the
+                # scrubber never has to reach into a pydantic model.
+                scrubber.check_before_write(node.summary, node.key_claims)
+                node.pii_scrubbed = True
+                stored_id = await store.upsert_node(node)
+                saved = await store.get_node(stored_id)
+                if saved is None:
+                    # Defensive: upsert_node should have left a row behind.
+                    raise RuntimeError(f"node {stored_id} vanished after upsert")
                 return _as_text(saved.model_dump())
             if name == "graph_diff":
-                changed = store.diff(arguments["since_iso"])
+                changed = await store.nodes_changed_since(arguments["since_iso"])
                 return _as_text({"nodes": [n.model_dump() for n in changed]})
             raise ValueError(f"Unknown tool: {name}")
         except PIILeakError as e:

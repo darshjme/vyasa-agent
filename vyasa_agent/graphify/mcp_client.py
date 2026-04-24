@@ -15,7 +15,7 @@ from typing import Any, Literal
 
 from .pii import PIIScrubber
 from .store import GraphStore
-from .types import Node, PIILeakError
+from .types import Node, QueryFilters
 
 Transport = Literal["inproc", "stdio"]
 
@@ -83,7 +83,7 @@ class GraphifyClient:
     async def graph_read(self, node_id: str) -> dict[str, Any] | None:
         if self._transport == "inproc":
             assert self._store is not None
-            node = self._store.read(node_id)
+            node = await self._store.get_node(node_id)
             return node.model_dump() if node else None
         return await self._call("graph_read", {"node_id": node_id})
 
@@ -111,7 +111,17 @@ class GraphifyClient:
         }
         if self._transport == "inproc":
             assert self._store is not None
-            rows = self._store.query(**args)
+            filters = QueryFilters(
+                intent=intent,
+                visibility_scope=[visibility_scope] if visibility_scope else None,
+                owner_employee_id=owner_employee_id,
+                episode_id=episode_id,
+                tags=list(tags or []) or None,
+                since=since,
+                limit=limit,
+                min_confidence=min_confidence,
+            )
+            rows = await self._store.query(filters)
             return [r.model_dump() for r in rows]
         return await self._call("graph_query", args)
 
@@ -121,9 +131,17 @@ class GraphifyClient:
         if self._transport == "inproc":
             assert self._store is not None
             node = Node.model_validate(node_payload)
-            if not self._scrubber.check_before_write(node):
-                raise PIILeakError(f"PII detected in node {node.id}; write refused.")
-            saved = self._store.write(node, author_employee_id=author_employee_id)
+            # Strict PII gate: raises PIILeakError from the scrubber when
+            # any residue survives. Successful gate also stamps updated_by
+            # so the audit trail records who requested the write.
+            self._scrubber.check_before_write(node.summary, node.key_claims)
+            node.pii_scrubbed = True
+            if not node.updated_by:
+                node.updated_by = author_employee_id
+            stored_id = await self._store.upsert_node(node)
+            saved = await self._store.get_node(stored_id)
+            if saved is None:
+                raise RuntimeError(f"node {stored_id} vanished after upsert")
             return saved.model_dump()
         return await self._call(
             "graph_write",
@@ -133,7 +151,7 @@ class GraphifyClient:
     async def graph_diff(self, since_iso: str) -> dict[str, Any]:
         if self._transport == "inproc":
             assert self._store is not None
-            nodes = self._store.diff(since_iso)
+            nodes = await self._store.nodes_changed_since(since_iso)
             return {"nodes": [n.model_dump() for n in nodes]}
         return await self._call("graph_diff", {"since_iso": since_iso})
 

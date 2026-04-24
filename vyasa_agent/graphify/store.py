@@ -491,6 +491,34 @@ class GraphStore:
 
         return await self._run(_op)
 
+    async def nodes_changed_since(
+        self, since_iso: str, limit: int = 100
+    ) -> list[Node]:
+        """Return active nodes whose ``updated_at`` is strictly after ``since_iso``.
+
+        The graph_diff MCP tool uses this to serve incremental sync callers
+        (routines, peers, offline replicas). Results are ordered oldest-first
+        so a consumer can walk a cursor forward one batch at a time. The
+        ``since_iso`` comparison is string-lexicographic, which matches
+        Python's ``datetime.isoformat`` ordering as long as both sides are
+        stored in UTC (the store enforces this at write time via
+        ``_utcnow_iso``).
+        """
+
+        if limit < 1:
+            raise ValueError("limit must be >= 1")
+
+        def _op() -> list[Node]:
+            rows = self._conn.execute(
+                "SELECT * FROM nodes "
+                "WHERE status != 'archived' AND updated_at > ? "
+                "ORDER BY updated_at ASC LIMIT ?",
+                (since_iso, limit),
+            ).fetchall()
+            return [_row_to_node(row) for row in rows]
+
+        return await self._run(_op)
+
     async def mark_archived(self, node_ids: Sequence[str], archived_at: str) -> int:
         """Flip status→archived for ``node_ids``. Return the affected count."""
 

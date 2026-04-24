@@ -180,30 +180,24 @@ async def test_v1_migration_is_idempotent(tmp_path: Path) -> None:
 
 async def test_graph_client_round_trip_optional(tmp_path: Path) -> None:
     pytest.importorskip("vyasa_agent.graphify.mcp_client", exc_type=ImportError)
-    try:
-        from vyasa_agent.graphify.mcp_client import GraphifyClient
-    except ImportError:
-        pytest.skip("GraphifyClient not ready")
+    from vyasa_agent.graphify.mcp_client import GraphifyClient
 
     db = tmp_path / "client-graph.sqlite"
-    try:
-        async with GraphifyClient(db_path=db, transport="inproc") as client:
-            saved = await client.graph_write(
-                node_payload={
-                    "id": "client-node-1",
-                    "type": "fact",
-                    "summary": "client round trip",
-                    "owner_employee_id": "prometheus",
-                    "visibility": "team",
-                },
-                author_employee_id="prometheus",
-            )
-            assert saved["id"] == "client-node-1"
-            read = await client.graph_read("client-node-1")
-            assert read is not None
-            assert read["summary"] == "client round trip"
-    except (AttributeError, TypeError) as exc:
-        pytest.skip(f"GraphifyClient API shape still in flight: {exc!r}")
+    async with GraphifyClient(db_path=db, transport="inproc") as client:
+        saved = await client.graph_write(
+            node_payload={
+                "id": "client-node-1",
+                "type": "fact",
+                "summary": "client round trip",
+                "owner_employee_id": "prometheus",
+                "visibility": "team",
+            },
+            author_employee_id="prometheus",
+        )
+        assert saved["id"] == "client-node-1"
+        read = await client.graph_read("client-node-1")
+        assert read is not None
+        assert read["summary"] == "client round trip"
 
 
 __all__: list[str] = []
