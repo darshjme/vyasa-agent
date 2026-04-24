@@ -1,0 +1,109 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vyasa-agent"
+version = "0.1.0"
+description = "A 28-partner self-hosted agent fleet, addressable from your phone."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Graymatter Online LLP", email = "engineering@graymatteronline.com" },
+]
+keywords = ["agent", "self-hosted", "telegram", "whatsapp", "multi-agent", "fleet"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "openai>=2.21.0,<3",
+    "anthropic>=0.39.0,<1",
+    "httpx[socks]>=0.28.1,<1",
+    "pydantic>=2.12.0,<3",
+    "pyyaml>=6.0.2,<7",
+    "jinja2>=3.1.5,<4",
+    "rich>=14.0.0,<15",
+    "fire>=0.7.1,<1",
+    "tenacity>=9.0.0,<10",
+    "python-dotenv>=1.1.0,<2",
+    "fastapi>=0.115.0,<1",
+    "uvicorn[standard]>=0.32.0,<1",
+    "prompt_toolkit>=3.0.50,<4",
+    "croniter>=6.0.0,<7",
+    "mcp>=1.2.0,<2",
+]
+
+[project.optional-dependencies]
+voice = [
+    "faster-whisper>=1.0.3,<2",
+    "sounddevice>=0.5.0,<1",
+    "numpy>=1.26,<3",
+]
+admin = [
+    "starlette>=0.42.0,<1",
+    "python-multipart>=0.0.12,<1",
+    "itsdangerous>=2.2.0,<3",
+]
+hi = [
+    "indic-transliteration>=2.3.0,<3",
+]
+messaging = [
+    "python-telegram-bot[webhooks]>=22.0,<23",
+    "aiohttp>=3.10.0,<4",
+]
+dev = [
+    "pytest>=8.3.0,<9",
+    "pytest-asyncio>=0.24.0,<1",
+    "pytest-xdist>=3.6.0,<4",
+    "ruff>=0.9.0,<1",
+    "ty>=0.0.1a0",
+]
+all = [
+    "vyasa-agent[voice]",
+    "vyasa-agent[admin]",
+    "vyasa-agent[hi]",
+    "vyasa-agent[messaging]",
+]
+
+[project.scripts]
+vyasa = "vyasa_agent.cli:main"
+
+[project.urls]
+Homepage = "https://graymatteronline.com/vyasa"
+Repository = "https://github.com/darshjme/vyasa-agent"
+Issues = "https://github.com/darshjme/vyasa-agent/issues"
+Changelog = "https://github.com/darshjme/vyasa-agent/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["vyasa_agent*"]
+exclude = ["tests*", "vendor*"]
+
+[tool.setuptools.package-data]
+vyasa_agent = ["admin_panel/static/**/*", "graphify/schema/*.sql"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "B", "UP", "ASYNC", "RUF"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.uv]
+exclude-newer = "7 days"

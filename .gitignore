@@ -1,0 +1,90 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv/
+venv/
+env/
+ENV/
+
+# Type checkers / linters
+.ruff_cache/
+.mypy_cache/
+.ty_cache/
+.pytype/
+.pyre/
+
+# Tests / coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.hypothesis/
+.tox/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+credentials.json
+secrets/
+
+# Local state
+.vyasa/
+~/.vyasa/
+local.sqlite
+*.db
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# Node / admin UI
+node_modules/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+admin-ui/dist/
+admin-ui/.vite/
+
+# Editor / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Artifacts
+*.log
+logs/
+tmp/
+.tmp/
+release-artifacts/
+envato-bundle/
+
+# Vendored upstream — excluded from source distribution; fetched via
+# scripts/fetch-vendor.sh at build time to keep white-label check clean.
+vendor/hermes_core/
