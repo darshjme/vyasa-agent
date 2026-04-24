@@ -10,7 +10,7 @@ directly — they call ``on_inbound`` and receive replies through ``send``.
 from __future__ import annotations
 
 import abc
-from collections.abc import Awaitable, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
 
 from ..types import InboundMessage, OutboundMessage
 
@@ -58,8 +58,20 @@ class ChannelAdapter(abc.ABC):
         """Stop receiving and release resources. Idempotent."""
 
     @abc.abstractmethod
-    async def send(self, msg: OutboundMessage) -> None:
-        """Deliver an outbound message to the chat surface."""
+    async def send(
+        self,
+        msg: OutboundMessage,
+        *,
+        stream: AsyncIterator[str] | None = None,
+    ) -> None:
+        """Deliver an outbound message to the chat surface.
+
+        When ``stream`` is provided, adapters that support progressive
+        rendering should dispatch to their streaming code path (editing a
+        single placeholder as chunks arrive). Adapters without streaming
+        support must consume the iterator, join the chunks onto ``msg.text``,
+        and deliver a single final message.
+        """
 
     # -- convenience -----------------------------------------------------
     @property

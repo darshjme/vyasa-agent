@@ -10,6 +10,7 @@ import asyncio
 import logging
 import sys
 import uuid
+from collections.abc import AsyncIterator
 from datetime import UTC, datetime
 
 from ..types import InboundMessage, OutboundMessage
@@ -58,8 +59,17 @@ class ConsoleAdapter(ChannelAdapter):
             self._reader_task = None
         log.info("console adapter stopped")
 
-    async def send(self, msg: OutboundMessage) -> None:
-        line = msg.text.rstrip("\n")
+    async def send(
+        self,
+        msg: OutboundMessage,
+        *,
+        stream: AsyncIterator[str] | None = None,
+    ) -> None:
+        text = msg.text
+        if stream is not None:
+            async for chunk in stream:
+                text += chunk
+        line = text.rstrip("\n")
         self._out.write(f"[{msg.trace_id}] {line}\n")
         self._out.flush()
 
