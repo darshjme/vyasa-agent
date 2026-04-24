@@ -1,0 +1,34 @@
+schema_version: 1
+id: indra
+display_name: Indra
+registry_source: vyasa
+role_key: sre
+system_prompt_ref: "vyasa:sre"
+allowed_tools:
+  - bash
+  - file_read
+  - file_edit
+  - grep
+  - glob
+  - git
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: indra
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.2
+max_turns: 35
+messaging_aliases:
+  - "@indra"
+  - "@sre"
+  - "/ask indra"
+visibility: public
+tags:
+  - tier3
+  - enterprise
+  - blocking

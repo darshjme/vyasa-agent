@@ -1,0 +1,39 @@
+schema_version: 1
+id: dr.rao
+display_name: "Dr. Siddharth Rao"
+registry_source: graymatter
+role_key: github_expert
+system_prompt_ref: "graymatter:github_expert"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - git
+  - docker
+  - gh
+  - gh_actions_yaml
+  - semver
+  - changelog
+  - release_drafter
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dr-rao
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.2
+max_turns: 25
+messaging_aliases:
+  - "@rao"
+  - "@releng"
+  - "/ask rao"
+  - "/ask dr.rao"
+visibility: internal
+tags:
+  - graymatter
+  - release

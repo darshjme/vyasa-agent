@@ -1,0 +1,33 @@
+schema_version: 1
+id: aryabhata
+display_name: Aryabhata
+registry_source: vyasa
+role_key: data_scientist
+system_prompt_ref: "vyasa:data_scientist"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - grep
+  - glob
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: aryabhata
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.3
+max_turns: 30
+messaging_aliases:
+  - "@aryabhata"
+  - "@data"
+  - "/ask aryabhata"
+visibility: internal
+tags:
+  - tier3
+  - enterprise

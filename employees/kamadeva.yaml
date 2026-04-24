@@ -1,0 +1,33 @@
+schema_version: 1
+id: kamadeva
+display_name: Kamadeva
+registry_source: vyasa
+role_key: ux_workflow
+system_prompt_ref: "vyasa:ux_workflow"
+allowed_tools:
+  - file_read
+  - file_write
+  - file_edit
+  - grep
+  - glob
+  - web_fetch
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: kamadeva
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.5
+max_turns: 25
+messaging_aliases:
+  - "@kamadeva"
+  - "@ux"
+  - "/ask kamadeva"
+visibility: internal
+tags:
+  - tier3
+  - enterprise

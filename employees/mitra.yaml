@@ -1,0 +1,32 @@
+schema_version: 1
+id: mitra
+display_name: Mitra
+registry_source: vyasa
+role_key: legal_intelligence
+system_prompt_ref: "vyasa:legal_intelligence"
+allowed_tools:
+  - file_read
+  - grep
+  - glob
+  - web_fetch
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: mitra
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/opus-4-7
+    provider: openrouter
+temperature: 0.2
+max_turns: 30
+messaging_aliases:
+  - "@mitra"
+  - "@legal"
+  - "/ask mitra"
+visibility: public
+tags:
+  - tier3
+  - enterprise
+  - blocking

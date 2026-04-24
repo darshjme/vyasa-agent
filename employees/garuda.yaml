@@ -1,0 +1,32 @@
+schema_version: 1
+id: garuda
+display_name: Garuda
+registry_source: vyasa
+role_key: scout
+system_prompt_ref: "vyasa:scout"
+allowed_tools:
+  - file_read
+  - grep
+  - glob
+  - git
+  - web_fetch
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: garuda
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.3
+max_turns: 25
+messaging_aliases:
+  - "@garuda"
+  - "@scout"
+  - "/ask garuda"
+visibility: internal
+tags:
+  - tier2
+  - architecture

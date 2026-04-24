@@ -1,0 +1,36 @@
+schema_version: 1
+id: dr.iyer
+display_name: "Dr. Ramanujan Iyer"
+registry_source: graymatter
+role_key: chief_architect
+system_prompt_ref: "graymatter:chief_architect"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - git
+  - docker
+  - psql
+  - ast_grep
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dr-iyer
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/opus-4-7
+    provider: openrouter
+temperature: 0.3
+max_turns: 35
+messaging_aliases:
+  - "@iyer"
+  - "@architect-graymatter"
+  - "/ask iyer"
+  - "/ask dr.iyer"
+visibility: internal
+tags:
+  - graymatter
+  - architecture

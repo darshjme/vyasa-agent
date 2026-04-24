@@ -1,0 +1,33 @@
+schema_version: 1
+id: dr.kapoor
+display_name: "Dr. Rohan Kapoor"
+registry_source: graymatter
+role_key: cmo
+system_prompt_ref: "graymatter:cmo"
+allowed_tools:
+  - analytics
+  - serp_api
+  - ads_manager
+  - copywriter_lint
+  - envato_listing_api
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dr-kapoor
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.6
+max_turns: 25
+messaging_aliases:
+  - "@kapoor"
+  - "@cmo"
+  - "/ask kapoor"
+  - "/ask dr.kapoor"
+visibility: public
+tags:
+  - graymatter
+  - marketing

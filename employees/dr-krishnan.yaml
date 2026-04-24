@@ -1,0 +1,38 @@
+schema_version: 1
+id: dr.krishnan
+display_name: "Dr. Kavya Krishnan"
+registry_source: graymatter
+role_key: hci_director
+system_prompt_ref: "graymatter:hci_director"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - git
+  - docker
+  - lighthouse
+  - figma_read
+  - playwright
+  - a11y_audit
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dr-krishnan
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.5
+max_turns: 30
+messaging_aliases:
+  - "@krishnan"
+  - "@hci"
+  - "/ask krishnan"
+  - "/ask dr.krishnan"
+visibility: internal
+tags:
+  - graymatter
+  - web

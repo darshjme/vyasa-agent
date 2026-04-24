@@ -1,0 +1,32 @@
+schema_version: 1
+id: sherlock
+display_name: Sherlock
+registry_source: vyasa
+role_key: debugger
+system_prompt_ref: "vyasa:debugger"
+allowed_tools:
+  - bash
+  - file_read
+  - grep
+  - glob
+  - git
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: sherlock
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.3
+max_turns: 25
+messaging_aliases:
+  - "@sherlock"
+  - "@debugger"
+  - "/ask sherlock"
+visibility: internal
+tags:
+  - tier1
+  - execution

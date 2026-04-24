@@ -1,0 +1,42 @@
+schema_version: 1
+id: dr.sharma
+display_name: "Dr. Ananya Sharma"
+registry_source: graymatter
+role_key: qa_docs
+system_prompt_ref: "graymatter:qa_docs"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - git
+  - docker
+  - lighthouse
+  - figma_read
+  - playwright
+  - a11y_audit
+  - cypress
+  - html_docs_gen
+  - visual_diff
+  - api_contract_check
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dr-sharma
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.3
+max_turns: 30
+messaging_aliases:
+  - "@sharma"
+  - "@qa"
+  - "/ask sharma"
+  - "/ask dr.sharma"
+visibility: public
+tags:
+  - graymatter
+  - qa

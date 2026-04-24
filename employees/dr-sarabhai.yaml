@@ -1,0 +1,35 @@
+schema_version: 1
+id: dr.sarabhai
+display_name: "Dr. Vikram Sarabhai"
+registry_source: graymatter
+role_key: managing_partner
+system_prompt_ref: "graymatter:managing_partner"
+allowed_tools:
+  - task_graph
+  - decompose
+  - route
+  - approve
+  - graph_read
+  - graph_write
+allowed_plugins:
+  - memory
+  - context_engine
+  - task_graph
+memory_namespace: dr-sarabhai
+model_preference:
+  default: openrouter/anthropic/opus-4-7
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.2
+max_turns: 60
+messaging_aliases:
+  - "@sarabhai"
+  - "@mp"
+  - "/ask sarabhai"
+  - "/ask dr.sarabhai"
+visibility: public
+tags:
+  - graymatter
+  - partner

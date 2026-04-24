@@ -1,0 +1,31 @@
+schema_version: 1
+id: dharma
+display_name: Dharma
+registry_source: vyasa
+role_key: reviewer
+system_prompt_ref: "vyasa:reviewer"
+allowed_tools:
+  - file_read
+  - grep
+  - glob
+  - git
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dharma
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.3
+max_turns: 25
+messaging_aliases:
+  - "@dharma"
+  - "@reviewer"
+  - "/ask dharma"
+visibility: internal
+tags:
+  - tier1
+  - execution

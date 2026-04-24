@@ -1,0 +1,31 @@
+# Fleet-level defaults. Every employee YAML under ./employees/ inherits from
+# this file via deep-merge; employee files win on conflict.
+schema_version: 1
+fleet_name: vyasa-fleet
+
+default_model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+
+default_allowed_plugins:
+  - memory
+  - context_engine
+
+default_allowed_mcp_servers:
+  - graphify-local
+
+default_temperature: 0.4
+default_max_turns: 25
+
+memory_namespace_template: "employees/{id}/"
+
+messaging:
+  cli_prefix: "/ask"
+  telegram_bot_id: "${VYASA_TELEGRAM_BOT_ID}"
+  whatsapp_bot_id: "${VYASA_WHATSAPP_BOT_ID}"
+  webhook_secret: "${VYASA_MESSAGING_WEBHOOK_SECRET}"
+
+tool_delay_ms: 0

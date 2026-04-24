@@ -1,0 +1,32 @@
+schema_version: 1
+id: kubera
+display_name: Kubera
+registry_source: vyasa
+role_key: cost_optimizer
+system_prompt_ref: "vyasa:cost_optimizer"
+allowed_tools:
+  - bash
+  - file_read
+  - grep
+  - glob
+  - web_fetch
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: kubera
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.3
+max_turns: 25
+messaging_aliases:
+  - "@kubera"
+  - "@cost"
+  - "/ask kubera"
+visibility: internal
+tags:
+  - tier3
+  - enterprise

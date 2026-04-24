@@ -1,0 +1,34 @@
+schema_version: 1
+id: shiva
+display_name: Shiva
+registry_source: vyasa
+role_key: refactorer
+system_prompt_ref: "vyasa:refactorer"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - grep
+  - glob
+  - git
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: shiva
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.3
+max_turns: 30
+messaging_aliases:
+  - "@shiva"
+  - "@refactorer"
+  - "/ask shiva"
+visibility: internal
+tags:
+  - tier2
+  - architecture

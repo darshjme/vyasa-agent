@@ -1,0 +1,626 @@
+# Vyasa Agent — Capability Matrix (28 employees x 20 capabilities)
+#
+# Source of truth for Kavach's per-employee tool-scope sandbox (design-04 §1).
+# Each cell: decision in {allow, deny, require_approval}, rationale <= 80 chars.
+#
+# Edit via PR only; changes trigger the SECURITY-APPROVED gate (design-04 §10).
+
+# --- 18 Vyasa mythic specialists ------------------------------------------
+
+vyasa:
+  fs_read:          { decision: allow,            rationale: "orchestrator reads roster + plans" }
+  fs_write:         { decision: deny,             rationale: "delegates writes to coder specialists" }
+  bash:             { decision: deny,             rationale: "orchestrator never shells directly" }
+  git:              { decision: deny,             rationale: "orchestrator never commits" }
+  docker:           { decision: deny,             rationale: "containers owned by Vayu / Iyer / Rao" }
+  web_fetch:        { decision: allow,            rationale: "product intel + recon dispatch" }
+  web_search:       { decision: allow,            rationale: "planning needs live search" }
+  gateway_telegram: { decision: allow,            rationale: "primary Managing-Partner inbox" }
+  gateway_whatsapp: { decision: allow,            rationale: "primary Managing-Partner inbox" }
+  gateway_slack:    { decision: allow,            rationale: "primary Managing-Partner inbox" }
+  delegate:         { decision: allow,            rationale: "core orchestration primitive" }
+  spawn_subagent:   { decision: allow,            rationale: "parallel STEP-3 dispatch" }
+  code_exec:        { decision: deny,             rationale: "no eval in orchestrator context" }
+  vision:           { decision: allow,            rationale: "screenshot + design review" }
+  stt:              { decision: allow,            rationale: "voice note intake" }
+  tts:              { decision: allow,            rationale: "voice replies to the user" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "license verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "creatives owned by Kapoor + Verma" }
+  data_pipelines:   { decision: deny,             rationale: "pipelines owned by Aryabhata + Varuna" }
+
+kavach:
+  fs_read:          { decision: allow,            rationale: "reads code + configs for review" }
+  fs_write:         { decision: deny,             rationale: "reviewer never writes prod code" }
+  bash:             { decision: require_approval, rationale: "ad-hoc sec tools need Vyasa sign-off" }
+  git:              { decision: allow,            rationale: "reviews branches + tags" }
+  docker:           { decision: require_approval, rationale: "container scan needs perf window" }
+  web_fetch:        { decision: allow,            rationale: "CVE feeds + advisory lookups" }
+  web_search:       { decision: allow,            rationale: "threat intel searches" }
+  gateway_telegram: { decision: allow,            rationale: "security alerts to Managing Partner" }
+  gateway_whatsapp: { decision: allow,            rationale: "security alerts to Managing Partner" }
+  gateway_slack:    { decision: allow,            rationale: "security channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "reviewer does not dispatch work" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat reviewer role" }
+  code_exec:        { decision: deny,             rationale: "review only, never execute" }
+  vision:           { decision: allow,            rationale: "screenshot evidence in findings" }
+  stt:              { decision: deny,             rationale: "text-first audit trail" }
+  tts:              { decision: deny,             rationale: "text-first audit trail" }
+  pentest:          { decision: allow,            rationale: "OWASP sweeps are the job" }
+  envato_verify:    { decision: allow,            rationale: "reviews license route end-to-end" }
+  image_gen:        { decision: deny,             rationale: "out of scope for security" }
+  data_pipelines:   { decision: deny,             rationale: "out of scope for security" }
+
+indra:
+  fs_read:          { decision: allow,            rationale: "SRE inspects configs + logs" }
+  fs_write:         { decision: require_approval, rationale: "prod config edits need sign-off" }
+  bash:             { decision: allow,            rationale: "incident response needs shell" }
+  git:              { decision: allow,            rationale: "ships runbooks + helm diffs" }
+  docker:           { decision: allow,            rationale: "container ops + rollouts" }
+  web_fetch:        { decision: allow,            rationale: "status dashboards + provider APIs" }
+  web_search:       { decision: allow,            rationale: "incident research" }
+  gateway_telegram: { decision: allow,            rationale: "pager bridge to Managing Partner" }
+  gateway_whatsapp: { decision: deny,             rationale: "pager stays on Telegram + Slack" }
+  gateway_slack:    { decision: allow,            rationale: "incident-channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "SRE owns own queue" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat SRE role" }
+  code_exec:        { decision: allow,            rationale: "remediation scripts at runtime" }
+  vision:           { decision: deny,             rationale: "not needed for ops loop" }
+  stt:              { decision: deny,             rationale: "text-first pager flow" }
+  tts:              { decision: deny,             rationale: "text-first pager flow" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "out of scope for SRE" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+varuna:
+  fs_read:          { decision: allow,            rationale: "risk inspects trade + exposure logs" }
+  fs_write:         { decision: require_approval, rationale: "risk-policy edits need sign-off" }
+  bash:             { decision: deny,             rationale: "analysis only, no shell" }
+  git:              { decision: allow,            rationale: "policy docs + dashboards commits" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "market-data provider APIs" }
+  web_search:       { decision: allow,            rationale: "regulator + news monitoring" }
+  gateway_telegram: { decision: allow,            rationale: "risk alerts to Managing Partner" }
+  gateway_whatsapp: { decision: deny,             rationale: "pager stays on Telegram + Slack" }
+  gateway_slack:    { decision: allow,            rationale: "risk-channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat risk role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat risk role" }
+  code_exec:        { decision: deny,             rationale: "notebooks via data_pipelines instead" }
+  vision:           { decision: deny,             rationale: "not needed for risk loop" }
+  stt:              { decision: deny,             rationale: "text-first risk flow" }
+  tts:              { decision: deny,             rationale: "text-first risk flow" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "out of scope for risk" }
+  data_pipelines:   { decision: allow,            rationale: "duplicate detection + latency probes" }
+
+mitra:
+  fs_read:          { decision: allow,            rationale: "legal reads contracts + policies" }
+  fs_write:         { decision: deny,             rationale: "legal drafts via git PR only" }
+  bash:             { decision: deny,             rationale: "legal never shells" }
+  git:              { decision: allow,            rationale: "contract + policy PRs" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "regulator + precedent lookups" }
+  web_search:       { decision: allow,            rationale: "case-law searches" }
+  gateway_telegram: { decision: deny,             rationale: "legal stays on record channels" }
+  gateway_whatsapp: { decision: deny,             rationale: "legal stays on record channels" }
+  gateway_slack:    { decision: allow,            rationale: "legal channel on Slack only" }
+  delegate:         { decision: deny,             rationale: "single-seat legal role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat legal role" }
+  code_exec:        { decision: deny,             rationale: "never executes code" }
+  vision:           { decision: allow,            rationale: "reads scanned contracts" }
+  stt:              { decision: deny,             rationale: "text-first evidence chain" }
+  tts:              { decision: deny,             rationale: "text-first evidence chain" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "TOS review via Sharma" }
+  image_gen:        { decision: deny,             rationale: "out of scope for legal" }
+  data_pipelines:   { decision: deny,             rationale: "out of scope for legal" }
+
+chanakya:
+  fs_read:          { decision: allow,            rationale: "product reads specs + roadmaps" }
+  fs_write:         { decision: allow,            rationale: "updates roadmap + positioning" }
+  bash:             { decision: deny,             rationale: "product never shells" }
+  git:              { decision: allow,            rationale: "ships PRDs + brief PRs" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "competitive intel fetches" }
+  web_search:       { decision: allow,            rationale: "live market searches" }
+  gateway_telegram: { decision: allow,            rationale: "user interviews + updates" }
+  gateway_whatsapp: { decision: deny,             rationale: "prefer Telegram + Slack" }
+  gateway_slack:    { decision: allow,            rationale: "product updates to team" }
+  delegate:         { decision: allow,            rationale: "routes to Prometheus + Kamadeva" }
+  spawn_subagent:   { decision: deny,             rationale: "uses delegate, not spawn" }
+  code_exec:        { decision: deny,             rationale: "prototype via Prometheus" }
+  vision:           { decision: allow,            rationale: "design mocks + screenshots" }
+  stt:              { decision: deny,             rationale: "text-first artifacts" }
+  tts:              { decision: deny,             rationale: "text-first artifacts" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "creatives owned by Kapoor + Verma" }
+  data_pipelines:   { decision: allow,            rationale: "analytics dashboards + funnels" }
+
+hermes:
+  fs_read:          { decision: allow,            rationale: "integrations read specs + fixtures" }
+  fs_write:         { decision: allow,            rationale: "ships adapter + client code" }
+  bash:             { decision: require_approval, rationale: "perf probes need timing window" }
+  git:              { decision: allow,            rationale: "integration PRs" }
+  docker:           { decision: require_approval, rationale: "container tests need sign-off" }
+  web_fetch:        { decision: allow,            rationale: "tests every external API" }
+  web_search:       { decision: allow,            rationale: "provider docs lookup" }
+  gateway_telegram: { decision: allow,            rationale: "integration alerts + tests" }
+  gateway_whatsapp: { decision: allow,            rationale: "integration alerts + tests" }
+  gateway_slack:    { decision: allow,            rationale: "integration alerts + tests" }
+  delegate:         { decision: deny,             rationale: "single-seat integrator role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat integrator role" }
+  code_exec:        { decision: allow,            rationale: "contract tests need eval" }
+  vision:           { decision: deny,             rationale: "text-first integration flow" }
+  stt:              { decision: deny,             rationale: "text-first integration flow" }
+  tts:              { decision: deny,             rationale: "text-first integration flow" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "license verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "out of scope for integrations" }
+  data_pipelines:   { decision: allow,            rationale: "ingestion into data + cache" }
+
+aryabhata:
+  fs_read:          { decision: allow,            rationale: "data reads fixtures + notebooks" }
+  fs_write:         { decision: allow,            rationale: "writes notebooks + features" }
+  bash:             { decision: allow,            rationale: "MLflow + backtest scripts" }
+  git:              { decision: allow,            rationale: "commits notebooks + models" }
+  docker:           { decision: require_approval, rationale: "GPU containers need sign-off" }
+  web_fetch:        { decision: allow,            rationale: "data provider APIs" }
+  web_search:       { decision: allow,            rationale: "paper + dataset searches" }
+  gateway_telegram: { decision: deny,             rationale: "internal metrics channel only" }
+  gateway_whatsapp: { decision: deny,             rationale: "internal metrics channel only" }
+  gateway_slack:    { decision: allow,            rationale: "data channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat data role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat data role" }
+  code_exec:        { decision: allow,            rationale: "backtests + feature engineering" }
+  vision:           { decision: allow,            rationale: "chart + plot review" }
+  stt:              { decision: deny,             rationale: "text-first analysis" }
+  tts:              { decision: deny,             rationale: "text-first analysis" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "plots come from matplotlib" }
+  data_pipelines:   { decision: allow,            rationale: "owns the pipeline DAGs" }
+
+kubera:
+  fs_read:          { decision: allow,            rationale: "cost reads invoices + budgets" }
+  fs_write:         { decision: deny,             rationale: "cost dashboards are read-only" }
+  bash:             { decision: require_approval, rationale: "cloud CLI probes need window" }
+  git:              { decision: allow,            rationale: "budget manifest PRs" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "cloud billing APIs" }
+  web_search:       { decision: allow,            rationale: "price + SKU lookups" }
+  gateway_telegram: { decision: deny,             rationale: "cost reports go to Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "cost reports go to Slack" }
+  gateway_slack:    { decision: allow,            rationale: "weekly spend review channel" }
+  delegate:         { decision: deny,             rationale: "single-seat cost role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat cost role" }
+  code_exec:        { decision: deny,             rationale: "analysis via pipelines instead" }
+  vision:           { decision: deny,             rationale: "text-first cost reports" }
+  stt:              { decision: deny,             rationale: "text-first cost reports" }
+  tts:              { decision: deny,             rationale: "text-first cost reports" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "out of scope for cost" }
+  data_pipelines:   { decision: allow,            rationale: "cost ETL into dashboards" }
+
+kamadeva:
+  fs_read:          { decision: allow,            rationale: "UX reads design tokens + copy" }
+  fs_write:         { decision: allow,            rationale: "ships design + copy commits" }
+  bash:             { decision: deny,             rationale: "UX never shells" }
+  git:              { decision: allow,            rationale: "UX PRs against frontend" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "component + token lookups" }
+  web_search:       { decision: allow,            rationale: "design-system searches" }
+  gateway_telegram: { decision: deny,             rationale: "UX stays on internal channels" }
+  gateway_whatsapp: { decision: deny,             rationale: "UX stays on internal channels" }
+  gateway_slack:    { decision: allow,            rationale: "design-review channel" }
+  delegate:         { decision: deny,             rationale: "single-seat UX role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat UX role" }
+  code_exec:        { decision: deny,             rationale: "prototype in frontend, not shell" }
+  vision:           { decision: allow,            rationale: "screenshot + mock review" }
+  stt:              { decision: deny,             rationale: "text-first artifacts" }
+  tts:              { decision: deny,             rationale: "text-first artifacts" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: allow,            rationale: "UI viz + dashboard assets" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+vishwakarma:
+  fs_read:          { decision: allow,            rationale: "architect reads everything" }
+  fs_write:         { decision: allow,            rationale: "ships ADRs + scaffolds" }
+  bash:             { decision: deny,             rationale: "architect directs, does not shell" }
+  git:              { decision: allow,            rationale: "architecture PRs + tags" }
+  docker:           { decision: require_approval, rationale: "platform container edits need review" }
+  web_fetch:        { decision: allow,            rationale: "RFC + spec lookups" }
+  web_search:       { decision: allow,            rationale: "prior-art searches" }
+  gateway_telegram: { decision: allow,            rationale: "arch broadcasts to Managing Partner" }
+  gateway_whatsapp: { decision: deny,             rationale: "prefer Telegram + Slack" }
+  gateway_slack:    { decision: allow,            rationale: "arch channel broadcasts" }
+  delegate:         { decision: allow,            rationale: "routes design to Prometheus" }
+  spawn_subagent:   { decision: deny,             rationale: "uses delegate, not spawn" }
+  code_exec:        { decision: deny,             rationale: "architect specifies, Prometheus runs" }
+  vision:           { decision: allow,            rationale: "diagram + screenshot review" }
+  stt:              { decision: deny,             rationale: "text-first ADRs" }
+  tts:              { decision: deny,             rationale: "text-first ADRs" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "diagrams from mermaid, not SD" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+shiva:
+  fs_read:          { decision: allow,            rationale: "refactor reads full trees" }
+  fs_write:         { decision: allow,            rationale: "refactor rewrites code" }
+  bash:             { decision: allow,            rationale: "codemods + large rewrites" }
+  git:              { decision: allow,            rationale: "refactor commits + branches" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: deny,             rationale: "refactor is local-only" }
+  web_search:       { decision: deny,             rationale: "refactor is local-only" }
+  gateway_telegram: { decision: deny,             rationale: "silent background partner" }
+  gateway_whatsapp: { decision: deny,             rationale: "silent background partner" }
+  gateway_slack:    { decision: deny,             rationale: "silent background partner" }
+  delegate:         { decision: deny,             rationale: "single-seat refactor role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat refactor role" }
+  code_exec:        { decision: allow,            rationale: "runs test suites after codemods" }
+  vision:           { decision: deny,             rationale: "text-first refactors" }
+  stt:              { decision: deny,             rationale: "text-first refactors" }
+  tts:              { decision: deny,             rationale: "text-first refactors" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "out of scope for refactor" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+garuda:
+  fs_read:          { decision: allow,            rationale: "scout reads whatever it finds" }
+  fs_write:         { decision: deny,             rationale: "scout only reports" }
+  bash:             { decision: deny,             rationale: "passive recon, never shells" }
+  git:              { decision: allow,            rationale: "reports land as git notes" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "passive HTTP probes" }
+  web_search:       { decision: allow,            rationale: "live search is the job" }
+  gateway_telegram: { decision: deny,             rationale: "findings go to vyasa via delegate" }
+  gateway_whatsapp: { decision: deny,             rationale: "findings go to vyasa via delegate" }
+  gateway_slack:    { decision: deny,             rationale: "findings go to vyasa via delegate" }
+  delegate:         { decision: deny,             rationale: "scout reports, never dispatches" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat scout role" }
+  code_exec:        { decision: deny,             rationale: "passive, never executes" }
+  vision:           { decision: deny,             rationale: "text-first recon" }
+  stt:              { decision: deny,             rationale: "text-first recon" }
+  tts:              { decision: deny,             rationale: "text-first recon" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "out of scope for scout" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+saraswati:
+  fs_read:          { decision: allow,            rationale: "docs reads code + specs" }
+  fs_write:         { decision: allow,            rationale: "ships docs + changelog" }
+  bash:             { decision: deny,             rationale: "docs writer never shells" }
+  git:              { decision: allow,            rationale: "doc PRs + release notes" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "references + external citations" }
+  web_search:       { decision: allow,            rationale: "style-guide + spec searches" }
+  gateway_telegram: { decision: deny,             rationale: "docs stays on Slack + web" }
+  gateway_whatsapp: { decision: deny,             rationale: "docs stays on Slack + web" }
+  gateway_slack:    { decision: allow,            rationale: "doc-review channel" }
+  delegate:         { decision: deny,             rationale: "single-seat docs role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat docs role" }
+  code_exec:        { decision: deny,             rationale: "docs never execute" }
+  vision:           { decision: allow,            rationale: "screenshots of UIs in docs" }
+  stt:              { decision: deny,             rationale: "text-first docs" }
+  tts:              { decision: deny,             rationale: "text-first docs" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: allow,            rationale: "diagram + hero imagery" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+prometheus:
+  fs_read:          { decision: allow,            rationale: "coder reads modules + tests" }
+  fs_write:         { decision: allow,            rationale: "coder ships code" }
+  bash:             { decision: allow,            rationale: "runs build + test suites" }
+  git:              { decision: allow,            rationale: "feature branches + PRs" }
+  docker:           { decision: require_approval, rationale: "prod-image edits need sign-off" }
+  web_fetch:        { decision: allow,            rationale: "fetch SDK + docs" }
+  web_search:       { decision: allow,            rationale: "library + API lookups" }
+  gateway_telegram: { decision: deny,             rationale: "coder stays on Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "coder stays on Slack" }
+  gateway_slack:    { decision: allow,            rationale: "PR + review channel" }
+  delegate:         { decision: deny,             rationale: "single-seat coder role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat coder role" }
+  code_exec:        { decision: allow,            rationale: "repl + scratch evals" }
+  vision:           { decision: allow,            rationale: "screenshot + mock references" }
+  stt:              { decision: deny,             rationale: "text-first dev loop" }
+  tts:              { decision: deny,             rationale: "text-first dev loop" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "release verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "creatives owned by Kapoor + Verma" }
+  data_pipelines:   { decision: allow,            rationale: "seeds + fixtures at dev time" }
+
+sherlock:
+  fs_read:          { decision: allow,            rationale: "debugger reads logs + traces" }
+  fs_write:         { decision: allow,            rationale: "fixes land as code" }
+  bash:             { decision: allow,            rationale: "repro + bisect need shell" }
+  git:              { decision: allow,            rationale: "bisect + fix commits" }
+  docker:           { decision: require_approval, rationale: "debug container edits need sign-off" }
+  web_fetch:        { decision: deny,             rationale: "repro stays local" }
+  web_search:       { decision: allow,            rationale: "error-message + issue lookups" }
+  gateway_telegram: { decision: deny,             rationale: "debugger reports via delegate" }
+  gateway_whatsapp: { decision: deny,             rationale: "debugger reports via delegate" }
+  gateway_slack:    { decision: allow,            rationale: "incident channel updates" }
+  delegate:         { decision: deny,             rationale: "single-seat debugger role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat debugger role" }
+  code_exec:        { decision: allow,            rationale: "runs repro + tests" }
+  vision:           { decision: deny,             rationale: "text-first crash dumps" }
+  stt:              { decision: deny,             rationale: "text-first crash dumps" }
+  tts:              { decision: deny,             rationale: "text-first crash dumps" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "out of scope for debug" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dharma:
+  fs_read:          { decision: allow,            rationale: "reviewer reads diffs" }
+  fs_write:         { decision: deny,             rationale: "reviewer comments, never writes" }
+  bash:             { decision: deny,             rationale: "reviewer stays in diff view" }
+  git:              { decision: allow,            rationale: "comments + approvals via git" }
+  docker:           { decision: deny,             rationale: "reviewer does not build" }
+  web_fetch:        { decision: deny,             rationale: "review is diff-local" }
+  web_search:       { decision: deny,             rationale: "review is diff-local" }
+  gateway_telegram: { decision: deny,             rationale: "review stays on Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "review stays on Slack" }
+  gateway_slack:    { decision: allow,            rationale: "code-review channel" }
+  delegate:         { decision: deny,             rationale: "single-seat reviewer role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat reviewer role" }
+  code_exec:        { decision: deny,             rationale: "review only, never execute" }
+  vision:           { decision: deny,             rationale: "diff view is text" }
+  stt:              { decision: deny,             rationale: "text-first review" }
+  tts:              { decision: deny,             rationale: "text-first review" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "out of scope for review" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+agni:
+  fs_read:          { decision: allow,            rationale: "QA reads tests + fixtures" }
+  fs_write:         { decision: allow,            rationale: "ships test code + fixtures" }
+  bash:             { decision: allow,            rationale: "runs full test suites" }
+  git:              { decision: allow,            rationale: "test-code PRs" }
+  docker:           { decision: require_approval, rationale: "QA container edits need sign-off" }
+  web_fetch:        { decision: deny,             rationale: "QA runs against local stacks" }
+  web_search:       { decision: deny,             rationale: "QA runs against local stacks" }
+  gateway_telegram: { decision: deny,             rationale: "QA reports via Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "QA reports via Slack" }
+  gateway_slack:    { decision: allow,            rationale: "QA channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat QA role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat QA role" }
+  code_exec:        { decision: allow,            rationale: "test runners + eval harness" }
+  vision:           { decision: allow,            rationale: "Playwright screenshot diffs" }
+  stt:              { decision: deny,             rationale: "text-first QA reports" }
+  tts:              { decision: deny,             rationale: "text-first QA reports" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "out of scope for QA" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+vayu:
+  fs_read:          { decision: allow,            rationale: "devops reads every manifest" }
+  fs_write:         { decision: allow,            rationale: "ships IaC + pipelines" }
+  bash:             { decision: allow,            rationale: "deploy + rollback shell ops" }
+  git:              { decision: allow,            rationale: "infra PRs + release tags" }
+  docker:           { decision: allow,            rationale: "owns the container path" }
+  web_fetch:        { decision: allow,            rationale: "cloud provider APIs" }
+  web_search:       { decision: allow,            rationale: "runbook + provider docs" }
+  gateway_telegram: { decision: allow,            rationale: "release pings to Managing Partner" }
+  gateway_whatsapp: { decision: deny,             rationale: "pager stays on Telegram + Slack" }
+  gateway_slack:    { decision: allow,            rationale: "deploys announce on Slack" }
+  delegate:         { decision: deny,             rationale: "single-seat devops role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat devops role" }
+  code_exec:        { decision: allow,            rationale: "release scripts + hotfixes" }
+  vision:           { decision: deny,             rationale: "text-first deploy flow" }
+  stt:              { decision: deny,             rationale: "text-first deploy flow" }
+  tts:              { decision: deny,             rationale: "text-first deploy flow" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "out of scope for devops" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+# --- 10 Graymatter Doctors ------------------------------------------------
+
+dr-sarabhai:
+  fs_read:          { decision: allow,            rationale: "MP reads roster + plans" }
+  fs_write:         { decision: deny,             rationale: "MP delegates writes" }
+  bash:             { decision: deny,             rationale: "MP never shells directly" }
+  git:              { decision: allow,            rationale: "MP reviews + tags releases" }
+  docker:           { decision: deny,             rationale: "containers owned by Vayu + Rao" }
+  web_fetch:        { decision: allow,            rationale: "market intel fetches" }
+  web_search:       { decision: allow,            rationale: "planning needs live search" }
+  gateway_telegram: { decision: allow,            rationale: "MP primary inbox" }
+  gateway_whatsapp: { decision: allow,            rationale: "MP primary inbox" }
+  gateway_slack:    { decision: allow,            rationale: "MP broadcasts to team" }
+  delegate:         { decision: allow,            rationale: "core orchestration primitive" }
+  spawn_subagent:   { decision: allow,            rationale: "parallel dispatch across fleet" }
+  code_exec:        { decision: deny,             rationale: "no eval in MP context" }
+  vision:           { decision: allow,            rationale: "design + mock review" }
+  stt:              { decision: deny,             rationale: "text-first MP log" }
+  tts:              { decision: deny,             rationale: "text-first MP log" }
+  pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "creatives owned by Kapoor + Verma" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dr-iyer:
+  fs_read:          { decision: allow,            rationale: "chief-arch reads everything" }
+  fs_write:         { decision: allow,            rationale: "ships ADRs + scaffolds" }
+  bash:             { decision: allow,            rationale: "arch probes + benchmarks" }
+  git:              { decision: allow,            rationale: "arch PRs + release tags" }
+  docker:           { decision: allow,            rationale: "owns platform containers" }
+  web_fetch:        { decision: allow,            rationale: "RFC + vendor docs" }
+  web_search:       { decision: allow,            rationale: "prior-art + benchmark searches" }
+  gateway_telegram: { decision: deny,             rationale: "chief-arch stays on Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "chief-arch stays on Slack" }
+  gateway_slack:    { decision: allow,            rationale: "arch channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat chief-arch role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat chief-arch role" }
+  code_exec:        { decision: allow,            rationale: "benchmark + prototype evals" }
+  vision:           { decision: allow,            rationale: "diagram + screenshot review" }
+  stt:              { decision: deny,             rationale: "text-first arch" }
+  tts:              { decision: deny,             rationale: "text-first arch" }
+  pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "diagrams from mermaid" }
+  data_pipelines:   { decision: allow,            rationale: "platform data DAGs" }
+
+dr-krishnan:
+  fs_read:          { decision: allow,            rationale: "HCI reads UX research + specs" }
+  fs_write:         { decision: allow,            rationale: "ships UX research + docs" }
+  bash:             { decision: require_approval, rationale: "runs user-study harness" }
+  git:              { decision: allow,            rationale: "research + UX PRs" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "user-study references" }
+  web_search:       { decision: allow,            rationale: "UX research searches" }
+  gateway_telegram: { decision: deny,             rationale: "HCI stays on Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "HCI stays on Slack" }
+  gateway_slack:    { decision: allow,            rationale: "UX research channel" }
+  delegate:         { decision: deny,             rationale: "single-seat HCI role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat HCI role" }
+  code_exec:        { decision: deny,             rationale: "studies run in a separate harness" }
+  vision:           { decision: allow,            rationale: "screenshot + usability review" }
+  stt:              { decision: deny,             rationale: "text-first research notes" }
+  tts:              { decision: deny,             rationale: "text-first research notes" }
+  pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: allow,            rationale: "research-illustration assets" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dr-desai:
+  fs_read:          { decision: allow,            rationale: "mobile reads app + native code" }
+  fs_write:         { decision: allow,            rationale: "ships mobile builds" }
+  bash:             { decision: allow,            rationale: "runs native build tools" }
+  git:              { decision: allow,            rationale: "mobile PRs + tags" }
+  docker:           { decision: deny,             rationale: "mobile stack is not containerised" }
+  web_fetch:        { decision: allow,            rationale: "native-SDK docs" }
+  web_search:       { decision: allow,            rationale: "platform-guideline searches" }
+  gateway_telegram: { decision: deny,             rationale: "mobile stays on Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "mobile stays on Slack" }
+  gateway_slack:    { decision: allow,            rationale: "mobile channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat mobile role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat mobile role" }
+  code_exec:        { decision: deny,             rationale: "builds run via bash, not eval" }
+  vision:           { decision: allow,            rationale: "device-screenshot review" }
+  stt:              { decision: deny,             rationale: "text-first mobile flow" }
+  tts:              { decision: deny,             rationale: "text-first mobile flow" }
+  pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
+  envato_verify:    { decision: deny,             rationale: "not on the release path" }
+  image_gen:        { decision: deny,             rationale: "assets via Kapoor + Kamadeva" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dr-reddy:
+  fs_read:          { decision: allow,            rationale: "security reads code + manifests" }
+  fs_write:         { decision: require_approval, rationale: "security-policy edits need sign-off" }
+  bash:             { decision: allow,            rationale: "pentest tools + scanners" }
+  git:              { decision: allow,            rationale: "security + license PRs" }
+  docker:           { decision: require_approval, rationale: "scanner containers need window" }
+  web_fetch:        { decision: allow,            rationale: "CVE + advisory feeds" }
+  web_search:       { decision: allow,            rationale: "threat intel searches" }
+  gateway_telegram: { decision: allow,            rationale: "security alerts to MP" }
+  gateway_whatsapp: { decision: deny,             rationale: "pager stays on Telegram + Slack" }
+  gateway_slack:    { decision: allow,            rationale: "security channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat security role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat security role" }
+  code_exec:        { decision: deny,             rationale: "runs scanners, never evals" }
+  vision:           { decision: allow,            rationale: "screenshot evidence in findings" }
+  stt:              { decision: deny,             rationale: "text-first audit trail" }
+  tts:              { decision: deny,             rationale: "text-first audit trail" }
+  pentest:          { decision: allow,            rationale: "pentest is the core job" }
+  envato_verify:    { decision: allow,            rationale: "owns the Envato verify route" }
+  image_gen:        { decision: deny,             rationale: "out of scope for security" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dr-kapoor:
+  fs_read:          { decision: allow,            rationale: "CMO reads copy + assets" }
+  fs_write:         { decision: allow,            rationale: "ships copy + campaign plans" }
+  bash:             { decision: deny,             rationale: "marketing never shells" }
+  git:              { decision: allow,            rationale: "marketing PRs + campaign tags" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "ad + analytics APIs" }
+  web_search:       { decision: allow,            rationale: "paid-search + trend research" }
+  gateway_telegram: { decision: deny,             rationale: "marketing stays on Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "marketing stays on Slack" }
+  gateway_slack:    { decision: allow,            rationale: "marketing channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat CMO role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat CMO role" }
+  code_exec:        { decision: deny,             rationale: "marketing never evals code" }
+  vision:           { decision: allow,            rationale: "creative + ad-mock review" }
+  stt:              { decision: deny,             rationale: "text-first marketing log" }
+  tts:              { decision: require_approval, rationale: "paid-ad voiceovers need sign-off" }
+  pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: allow,            rationale: "paid-ad creatives" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dr-sharma:
+  fs_read:          { decision: allow,            rationale: "QA + docs reads specs + artifacts" }
+  fs_write:         { decision: allow,            rationale: "ships docs + tests" }
+  bash:             { decision: allow,            rationale: "runs QA harness + doc build" }
+  git:              { decision: allow,            rationale: "docs + QA PRs" }
+  docker:           { decision: require_approval, rationale: "QA images need sign-off" }
+  web_fetch:        { decision: allow,            rationale: "doc links + Envato TOS fetch" }
+  web_search:       { decision: allow,            rationale: "doc + TOS searches" }
+  gateway_telegram: { decision: deny,             rationale: "QA + docs stays on Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "QA + docs stays on Slack" }
+  gateway_slack:    { decision: allow,            rationale: "QA + docs channel" }
+  delegate:         { decision: deny,             rationale: "single-seat QA + docs role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat QA + docs role" }
+  code_exec:        { decision: allow,            rationale: "runs doc + test harness" }
+  vision:           { decision: allow,            rationale: "screenshot capture for docs" }
+  stt:              { decision: deny,             rationale: "text-first artifacts" }
+  tts:              { decision: deny,             rationale: "text-first artifacts" }
+  pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "assets via Kapoor + Kamadeva" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dr-rao:
+  fs_read:          { decision: allow,            rationale: "release reads manifests + scripts" }
+  fs_write:         { decision: allow,            rationale: "ships release manifests" }
+  bash:             { decision: allow,            rationale: "cuts + signs releases" }
+  git:              { decision: allow,            rationale: "release tags + GitHub flow" }
+  docker:           { decision: allow,            rationale: "release containers + bundles" }
+  web_fetch:        { decision: allow,            rationale: "GH + CDN APIs" }
+  web_search:       { decision: allow,            rationale: "release-note research" }
+  gateway_telegram: { decision: deny,             rationale: "release stays on Slack" }
+  gateway_whatsapp: { decision: deny,             rationale: "release stays on Slack" }
+  gateway_slack:    { decision: allow,            rationale: "release channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat release role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat release role" }
+  code_exec:        { decision: allow,            rationale: "release scripts + smoke tests" }
+  vision:           { decision: deny,             rationale: "text-first release flow" }
+  stt:              { decision: deny,             rationale: "text-first release flow" }
+  tts:              { decision: deny,             rationale: "text-first release flow" }
+  pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "assets via Kapoor + Kamadeva" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dr-verma:
+  fs_read:          { decision: allow,            rationale: "social reads brand + templates" }
+  fs_write:         { decision: allow,            rationale: "ships social posts + threads" }
+  bash:             { decision: deny,             rationale: "social never shells" }
+  git:              { decision: allow,            rationale: "social + campaign PRs" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: allow,            rationale: "platform APIs + link previews" }
+  web_search:       { decision: allow,            rationale: "trend + hashtag searches" }
+  gateway_telegram: { decision: allow,            rationale: "launch-day + community pushes" }
+  gateway_whatsapp: { decision: allow,            rationale: "launch-day + community pushes" }
+  gateway_slack:    { decision: allow,            rationale: "social channel broadcasts" }
+  delegate:         { decision: deny,             rationale: "single-seat social role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat social role" }
+  code_exec:        { decision: deny,             rationale: "social never evals code" }
+  vision:           { decision: allow,            rationale: "creative + thumbnail review" }
+  stt:              { decision: allow,            rationale: "voice-note intake for short-form" }
+  tts:              { decision: allow,            rationale: "short-form voiceover" }
+  pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: allow,            rationale: "social creatives + hero art" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }

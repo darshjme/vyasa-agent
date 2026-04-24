@@ -1,0 +1,32 @@
+schema_version: 1
+id: saraswati
+display_name: Saraswati
+registry_source: vyasa
+role_key: docs
+system_prompt_ref: "vyasa:docs"
+allowed_tools:
+  - file_read
+  - file_write
+  - file_edit
+  - grep
+  - glob
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: saraswati
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.4
+max_turns: 25
+messaging_aliases:
+  - "@saraswati"
+  - "@docs"
+  - "/ask saraswati"
+visibility: internal
+tags:
+  - tier2
+  - architecture

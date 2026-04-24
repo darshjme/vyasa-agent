@@ -1,0 +1,35 @@
+schema_version: 1
+id: dr.bose
+display_name: "Dr. Siddhant Bose"
+registry_source: graymatter
+role_key: mcp_expert
+system_prompt_ref: "graymatter:mcp_expert"
+allowed_tools:
+  - mcp_config
+  - graph_read
+  - graph_write
+  - graph_query
+  - context_compress
+  - tool_discovery
+allowed_plugins:
+  - memory
+  - context_engine
+  - graphify
+memory_namespace: dr-bose
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.1
+max_turns: 25
+messaging_aliases:
+  - "@bose"
+  - "@graphify-doctor"
+  - "/ask bose"
+  - "/ask dr.bose"
+visibility: internal
+tags:
+  - graymatter
+  - memory

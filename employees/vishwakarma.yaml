@@ -1,0 +1,32 @@
+schema_version: 1
+id: vishwakarma
+display_name: Vishwakarma
+registry_source: vyasa
+role_key: architect
+system_prompt_ref: "vyasa:architect"
+allowed_tools:
+  - file_read
+  - grep
+  - glob
+  - git
+  - web_fetch
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: vishwakarma
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/opus-4-7
+    provider: openrouter
+temperature: 0.4
+max_turns: 35
+messaging_aliases:
+  - "@vishwakarma"
+  - "@architect"
+  - "/ask vishwakarma"
+visibility: internal
+tags:
+  - tier2
+  - architecture

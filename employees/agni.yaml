@@ -1,0 +1,33 @@
+schema_version: 1
+id: agni
+display_name: Agni
+registry_source: vyasa
+role_key: tester
+system_prompt_ref: "vyasa:tester"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - grep
+  - glob
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: agni
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.4
+max_turns: 25
+messaging_aliases:
+  - "@agni"
+  - "@tester"
+  - "/ask agni"
+visibility: internal
+tags:
+  - tier1
+  - execution

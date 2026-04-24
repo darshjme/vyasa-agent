@@ -1,0 +1,33 @@
+schema_version: 1
+id: vayu
+display_name: Vayu
+registry_source: vyasa
+role_key: devops
+system_prompt_ref: "vyasa:devops"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - git
+  - grep
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: vayu
+model_preference:
+  default: openrouter/anthropic/haiku-4-5
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.3
+max_turns: 25
+messaging_aliases:
+  - "@vayu"
+  - "@devops"
+  - "/ask vayu"
+visibility: internal
+tags:
+  - tier1
+  - execution

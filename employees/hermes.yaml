@@ -1,0 +1,35 @@
+schema_version: 1
+id: hermes
+display_name: Hermes
+registry_source: vyasa
+role_key: integration
+system_prompt_ref: "vyasa:integration"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - grep
+  - glob
+  - web_fetch
+  - git
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: hermes
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.3
+max_turns: 30
+messaging_aliases:
+  - "@hermes"
+  - "@integration"
+  - "/ask hermes"
+visibility: internal
+tags:
+  - tier3
+  - enterprise

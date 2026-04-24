@@ -1,0 +1,39 @@
+schema_version: 1
+id: dr.desai
+display_name: "Dr. Arjun Desai"
+registry_source: graymatter
+role_key: mobile_lead
+system_prompt_ref: "graymatter:mobile_lead"
+allowed_tools:
+  - bash
+  - file_read
+  - file_write
+  - file_edit
+  - git
+  - docker
+  - flutter
+  - xcodebuild
+  - gradle
+  - adb
+  - fastlane
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dr-desai
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.3
+max_turns: 30
+messaging_aliases:
+  - "@desai"
+  - "@mobile"
+  - "/ask desai"
+  - "/ask dr.desai"
+visibility: internal
+tags:
+  - graymatter
+  - mobile

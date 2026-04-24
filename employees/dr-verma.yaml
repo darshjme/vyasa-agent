@@ -1,0 +1,33 @@
+schema_version: 1
+id: dr.verma
+display_name: "Dr. Naina Verma"
+registry_source: graymatter
+role_key: social_expert
+system_prompt_ref: "graymatter:social_expert"
+allowed_tools:
+  - x_api
+  - reddit_api
+  - viral_predictor
+  - trend_analyzer
+  - seo_audit
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dr-verma
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/haiku-4-5
+    provider: openrouter
+temperature: 0.7
+max_turns: 25
+messaging_aliases:
+  - "@verma"
+  - "@viral"
+  - "/ask verma"
+  - "/ask dr.verma"
+visibility: public
+tags:
+  - graymatter
+  - social

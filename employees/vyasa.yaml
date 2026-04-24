@@ -1,0 +1,34 @@
+schema_version: 1
+id: vyasa
+display_name: Vyasa
+registry_source: vyasa
+role_key: orchestrator
+system_prompt_ref: "vyasa:orchestrator"
+allowed_tools:
+  - task_graph
+  - decompose
+  - route
+  - approve
+  - graph_read
+  - graph_write
+allowed_plugins:
+  - memory
+  - context_engine
+  - task_graph
+memory_namespace: vyasa
+model_preference:
+  default: openrouter/anthropic/opus-4-7
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/sonnet-4-6
+    provider: openrouter
+temperature: 0.3
+max_turns: 60
+messaging_aliases:
+  - "@vyasa"
+  - "@orchestrator"
+  - "/ask vyasa"
+visibility: public
+tags:
+  - tier4
+  - control

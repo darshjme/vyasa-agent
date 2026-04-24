@@ -1,0 +1,33 @@
+schema_version: 1
+id: varuna
+display_name: Varuna
+registry_source: vyasa
+role_key: risk_engine
+system_prompt_ref: "vyasa:risk_engine"
+allowed_tools:
+  - bash
+  - file_read
+  - file_edit
+  - grep
+  - glob
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: varuna
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/opus-4-7
+    provider: openrouter
+temperature: 0.2
+max_turns: 30
+messaging_aliases:
+  - "@varuna"
+  - "@risk"
+  - "/ask varuna"
+visibility: public
+tags:
+  - tier3
+  - enterprise
+  - blocking

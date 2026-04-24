@@ -1,0 +1,31 @@
+schema_version: 1
+id: chanakya
+display_name: Chanakya
+registry_source: vyasa
+role_key: product_strategist
+system_prompt_ref: "vyasa:product_strategist"
+allowed_tools:
+  - file_read
+  - grep
+  - glob
+  - web_fetch
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: chanakya
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/opus-4-7
+    provider: openrouter
+temperature: 0.5
+max_turns: 30
+messaging_aliases:
+  - "@chanakya"
+  - "@strategist"
+  - "/ask chanakya"
+visibility: public
+tags:
+  - tier3
+  - enterprise

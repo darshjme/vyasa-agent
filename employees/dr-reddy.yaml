@@ -1,0 +1,38 @@
+schema_version: 1
+id: dr.reddy
+display_name: "Dr. Meera Reddy"
+registry_source: graymatter
+role_key: security_chief
+system_prompt_ref: "graymatter:security_chief"
+allowed_tools:
+  - bash
+  - file_read
+  - nmap
+  - burp
+  - semgrep
+  - trivy
+  - envato_verify
+  - installer_smoke
+allowed_plugins:
+  - memory
+  - context_engine
+memory_namespace: dr-reddy
+model_preference:
+  default: openrouter/anthropic/sonnet-4-6
+  provider: openrouter
+  fallback:
+    model: openrouter/anthropic/opus-4-7
+    provider: openrouter
+temperature: 0.1
+max_turns: 40
+messaging_aliases:
+  - "@reddy"
+  - "@meera"
+  - "@security-graymatter"
+  - "/ask reddy"
+  - "/ask dr.reddy"
+visibility: public
+tags:
+  - graymatter
+  - security
+  - blocking
