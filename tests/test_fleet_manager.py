@@ -19,6 +19,16 @@ from vyasa_agent.fleet.manager import FleetManager
 from vyasa_agent.fleet.types import Turn
 
 
+@pytest.fixture(autouse=True)
+def _stub_bridge(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep these runtime-skeleton tests on the offline stub path.
+
+    The real :class:`AgentRuntimeBridge` vendored hook is covered by
+    ``tests/test_bridge.py``; here we only care about the actor lifecycle.
+    """
+    monkeypatch.setenv("VYASA_STUB_BRIDGE", "1")
+
+
 def _mock_descriptor(employee_id: str, display_name: str) -> EmployeeDescriptor:
     return EmployeeDescriptor(
         id=employee_id,

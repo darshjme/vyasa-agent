@@ -6,11 +6,18 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 from vyasa_agent.fleet.descriptor import EmployeeDescriptor, FleetConfig
 from vyasa_agent.fleet.types import EmployeeHealth, EmployeeState, Turn, TurnResult
+
+if TYPE_CHECKING:
+    from vyasa_agent.fleet.audit import AuditSink
+    from vyasa_agent.fleet.bridge import AgentRuntimeBridge
+    from vyasa_agent.fleet.capability import CapabilityMatrix
 
 logger = logging.getLogger("vyasa.fleet.actor")
 
@@ -37,6 +44,10 @@ class EmployeeActor:
         queue_max_size: int = DEFAULT_QUEUE_MAX_SIZE,
         per_turn_timeout_s: float = DEFAULT_PER_TURN_TIMEOUT_S,
         submit_timeout_s: float = DEFAULT_SUBMIT_TIMEOUT_S,
+        enabled: bool = True,
+        matrix: "CapabilityMatrix | None" = None,
+        graph: Any | None = None,
+        audit: "AuditSink | None" = None,
     ) -> None:
         self.descriptor = descriptor
         self.fleet_config = fleet_config
@@ -56,8 +67,18 @@ class EmployeeActor:
         self._turns_handled: int = 0
         self._error_count: int = 0
         self._last_activity_at: datetime | None = None
-        # NEXT: wire AIAgent.run_conversation() here.  Lazy — no I/O at __init__.
-        self._agent: object | None = None
+        # Admin-overlay toggle.  When ``False`` the actor answers politely
+        # with an "unavailable" :class:`TurnResult` instead of invoking the
+        # downstream agent.  Set via :meth:`set_enabled` from the settings
+        # bridge hot-reload path (design-08 §7).
+        self._enabled: bool = enabled
+        # Runtime dependencies shared across the fleet.  FleetManager.boot
+        # constructs one matrix + graph_client + audit_sink and passes them
+        # to every actor (design-04 §2).
+        self.matrix = matrix
+        self.graph = graph
+        self.audit = audit
+        self._bridge: "AgentRuntimeBridge | None" = None
 
     # ---------- lifecycle ----------------------------------------------------
 
@@ -134,6 +155,28 @@ class EmployeeActor:
     def attach_run_task(self, task: asyncio.Task[None]) -> None:
         self._run_task = task
 
+    # ---------- admin-overlay toggles ---------------------------------------
+
+    def set_enabled(self, enabled: bool) -> None:
+        """Enable or disable this actor at runtime.
+
+        Disabled actors answer every turn with a polite unavailable result;
+        the run loop, queue, and state-db stay intact so re-enabling resumes
+        normal operation on the next submit without a restart.
+        """
+        previous = self._enabled
+        self._enabled = bool(enabled)
+        if previous != self._enabled:
+            self._log(
+                "info",
+                "actor.enabled.changed",
+                enabled=self._enabled,
+            )
+
+    @property
+    def enabled(self) -> bool:
+        return self._enabled
+
     # ---------- internals ----------------------------------------------------
 
     async def _next_item(self) -> tuple[Turn, asyncio.Future[TurnResult]] | None:
@@ -195,21 +238,52 @@ class EmployeeActor:
         )
 
     async def _execute_turn(self, turn: Turn) -> TurnResult:
-        # NEXT: wire AIAgent.run_conversation() per design-02 §3 + recon-04 §2;
-        # offload sync call via loop.run_in_executor(shared_pool, ...) (design-01
-        # §3, ACP pattern acp_adapter/server.py:73).
-        # TODO(pool): shared ThreadPoolExecutor owned by FleetManager.
-        return TurnResult(
-            employee_id=self.id,
-            text=f"[{self.display_name}] {turn.text[::-1]}",
-            trace_id=turn.trace_id,
-            tool_calls=[],
-            confidence_score=1.0,
-        )
+        # Admin disabled this employee — return a polite unavailable result
+        # without invoking the downstream agent.  No side-effects, no tool
+        # calls, no budget spend.
+        if not self._enabled:
+            return TurnResult(
+                employee_id=self.id,
+                text=(
+                    f"[{self.display_name}] is temporarily unavailable. "
+                    f"Please try another partner or check back shortly."
+                ),
+                trace_id=turn.trace_id,
+                tool_calls=[],
+                confidence_score=0.0,
+                error="employee_disabled",
+            )
+
+        # Test / offline path — stubbed reverse-echo keeps the actor contract
+        # intact when ``VYASA_STUB_BRIDGE=1`` disables real inference.
+        if os.environ.get("VYASA_STUB_BRIDGE", "") == "1":
+            return TurnResult(
+                employee_id=self.id,
+                text=f"[{self.display_name}] {turn.text[::-1]}",
+                trace_id=turn.trace_id,
+                tool_calls=[],
+                confidence_score=1.0,
+            )
+
+        if self._bridge is None:
+            from vyasa_agent.fleet.bridge import AgentRuntimeBridge
+            self._bridge = AgentRuntimeBridge(
+                self.descriptor, self.fleet_config, self.matrix,
+                self.graph, self.audit,
+            )
+        return await self._bridge.turn(turn)
 
     async def _persist_session(self) -> None:
-        # NEXT: call AIAgent._persist_session() once self._agent exists
-        # (recon-04 §8 — SQLite + JSONL dual-sink).
+        # Flush the bridge (SQLite + JSONL dual-sink per recon-04 §8) before
+        # the run loop exits.  Bridge is lazy so it may be unset in the
+        # stub / never-submitted path — still touch the state file so the
+        # on-disk layout is stable.
+        if self._bridge is not None:
+            try:
+                await self._bridge.close()
+            except Exception:
+                logger.exception("actor.persist.error",
+                                 extra={"employee_id": self.id})
         if self._state_db_path is not None:
             self._state_db_path.touch(exist_ok=True)
 

@@ -12,8 +12,12 @@ import logging
 import sys
 from pathlib import Path
 
+from vyasa_agent.admin_panel.settings_store import SettingsStore
 from vyasa_agent.fleet.actor import EmployeeActor
+from vyasa_agent.fleet.audit import AuditSink
+from vyasa_agent.fleet.capability import CapabilityMatrix
 from vyasa_agent.fleet.descriptor import EmployeeDescriptor, FleetConfig, load_fleet
+from vyasa_agent.fleet.settings_bridge import SettingsOverlay, apply_overlay
 from vyasa_agent.fleet.types import EmployeeHealth, Turn, TurnResult
 
 logger = logging.getLogger("vyasa.fleet.manager")
@@ -35,21 +39,69 @@ class FleetManager:
         self._fleet_config: FleetConfig | None = None
         self._shutdown_timeout_s: float = shutdown_timeout_s
         self._booted: bool = False
+        self._overlay: SettingsOverlay | None = None
+        self._matrix: CapabilityMatrix | None = None
+        self._graph_client: object | None = None
+        self._audit_sink: AuditSink | None = None
 
     # ---------- boot / shutdown ---------------------------------------------
 
-    async def boot(self, root: Path) -> None:
-        """Load fleet from ``root`` and start every actor concurrently."""
+    async def boot(
+        self,
+        root: Path,
+        *,
+        settings_store: SettingsStore | None = None,
+        matrix: CapabilityMatrix | None = None,
+        graph_client: object | None = None,
+        audit_sink: AuditSink | None = None,
+    ) -> None:
+        """Load fleet from ``root`` and start every actor concurrently.
+
+        When ``settings_store`` is supplied the manager wraps it in a
+        :class:`SettingsOverlay`, merges admin overrides onto every YAML
+        descriptor before spawning the actor, and registers a hot-reload
+        callback so future ``POST /v1/admin/settings`` writes flip actor
+        state without a restart (constitution §4 row 1).
+        """
         if self._booted:
             raise RuntimeError("FleetManager already booted")
 
         config, descriptors = load_fleet(Path(root))
         self._fleet_config = config
 
-        actors = [
-            EmployeeActor(descriptor, config, state_root=root / "employees" / "state")
-            for descriptor in descriptors
-        ]
+        overlay: SettingsOverlay | None = None
+        if settings_store is not None:
+            overlay = SettingsOverlay(settings_store)
+            descriptors = [apply_overlay(d, overlay) for d in descriptors]
+        self._overlay = overlay
+
+        # One matrix + graph_client + audit_sink per fleet, shared across
+        # every actor so Layer B/C hooks and audit land in one place
+        # (design-04 §2).
+        if matrix is None:
+            matrix_path = Path(root) / "capabilities.yaml"
+            if matrix_path.exists():
+                matrix = CapabilityMatrix.load(matrix_path)
+        if audit_sink is None:
+            audit_sink = AuditSink()
+        self._matrix = matrix
+        self._graph_client = graph_client
+        self._audit_sink = audit_sink
+
+        actors: list[EmployeeActor] = []
+        for descriptor in descriptors:
+            enabled = overlay.get_employee_enabled(descriptor.id) if overlay else True
+            actor = EmployeeActor(
+                descriptor,
+                config,
+                state_root=root / "employees" / "state",
+                enabled=enabled,
+                matrix=matrix,
+                graph=graph_client,
+                audit=audit_sink,
+            )
+            actors.append(actor)
+
         for actor in actors:
             if actor.id in self._actors:
                 raise ValueError(f"duplicate employee id: {actor.id}")
@@ -62,6 +114,9 @@ class FleetManager:
                 task = loop.create_task(actor.run(), name=f"employee-{actor.id}")
                 actor.attach_run_task(task)
                 self._run_tasks[actor.id] = task
+
+        if overlay is not None:
+            overlay.watch(self._on_settings_change)
 
         self._booted = True
         logger.info(
@@ -153,6 +208,63 @@ class FleetManager:
         if isinstance(trace_id, str):
             turn_kwargs["trace_id"] = trace_id
         return await to_actor.submit(Turn(**turn_kwargs))
+
+    # ---------- settings bridge ---------------------------------------------
+
+    def attach_overlay(self, overlay: SettingsOverlay) -> None:
+        """Register an overlay on a manager booted via :meth:`register_actor`.
+
+        The standard ``boot`` path installs the overlay automatically; this
+        helper is for tests and dynamic wiring where actors are attached one
+        at a time.  Safe to call idempotently — re-attaching replaces the
+        previous callback hook.
+        """
+        self._overlay = overlay
+        overlay.watch(self._on_settings_change)
+        # Apply current enabled state to every actor already registered.
+        for actor in self._actors.values():
+            actor.set_enabled(overlay.get_employee_enabled(actor.id))
+
+    def _on_settings_change(self, key: str, value: object) -> None:
+        """Hot-reload hook.
+
+        Only enablement flips are applied to actors; every other tunable is
+        consumed lazily via the overlay (no restart required).  Unknown keys
+        are ignored — other subscribers (channel adapters, branding) handle
+        those.
+        """
+        if key == "fleet.employees.disabled":
+            if not isinstance(value, list):
+                return
+            disabled = {str(x).strip().lower().replace(".", "-") for x in value}
+            for actor in self._actors.values():
+                canon = actor.id.lower().replace(".", "-")
+                actor.set_enabled(canon not in disabled)
+            return
+
+        if key == "fleet.employees.enabled":
+            # Allowlist semantics: empty / unset ⇒ allow all.
+            if not isinstance(value, list) or not value:
+                for actor in self._actors.values():
+                    actor.set_enabled(True)
+                return
+            allowed = {str(x).strip().lower().replace(".", "-") for x in value}
+            for actor in self._actors.values():
+                canon = actor.id.lower().replace(".", "-")
+                actor.set_enabled(canon in allowed)
+            return
+
+        if key.startswith("fleet.employee.") and key.endswith(".enabled"):
+            remainder = key[len("fleet.employee."):-len(".enabled")]
+            canon = remainder.strip().lower().replace(".", "-")
+            for actor in self._actors.values():
+                if actor.id.lower().replace(".", "-") == canon:
+                    actor.set_enabled(bool(value))
+                    return
+
+    @property
+    def overlay(self) -> SettingsOverlay | None:
+        return self._overlay
 
     # ---------- introspection -----------------------------------------------
 
