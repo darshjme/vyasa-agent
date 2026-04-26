@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Fleet descriptor and employee YAML catalog loader.
 
 Defines the Pydantic schema for `vyasa.yaml` (fleet-level defaults) and
