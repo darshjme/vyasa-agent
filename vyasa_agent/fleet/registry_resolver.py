@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Resolve `system_prompt_ref` strings into concrete prompt text.
 
 Supported reference forms (namespace before the first colon):
