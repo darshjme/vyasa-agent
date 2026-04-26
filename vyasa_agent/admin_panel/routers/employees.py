@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Employees directory + per-employee status + enable/disable toggle.
 
 Rows 4–5 of design-06 §2. The enable/disable toggle is an admin-only write
