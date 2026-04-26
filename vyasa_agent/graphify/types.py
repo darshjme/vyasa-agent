@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Pydantic models for the Graphify v2 storage layer.
 
 The models here are the in-memory shape the rest of the fleet speaks; the
