@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Graphify read/write routes (design-06 §2 rows 6–7).
 
 Read path is admin-guarded and safe to call from the Memory Browser UI.
