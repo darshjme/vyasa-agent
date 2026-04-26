@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """RoutineRunner — cron + webhook task scheduler per employee.
 
 Discovers ``plans/<employee_id>/*.yaml``, registers cron loops (``croniter``
