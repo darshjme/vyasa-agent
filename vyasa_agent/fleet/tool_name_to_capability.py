@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Tool-name to :class:`Capability` mapping.
 
 The hermes tool registry names tools by string (e.g. ``run_bash``,
