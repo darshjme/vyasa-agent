@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Typed Python client for Graphify. Two transports: in-process (default) and stdio MCP.
 
 In-process talks to :class:`GraphStore` directly; stdio launches the MCP server
