@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Graph compaction — v0.1 rules-only pass.
 
 This is the minimum viable compactor described in
