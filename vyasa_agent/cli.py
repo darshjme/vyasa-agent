@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """``vyasa`` CLI entry point (Fire). Groups: gateway / employee / graph,
 plus ``doctor`` and ``version``. ``gateway serve`` boots fleet + adapters +
 admin panel on port 19000, drains within 30s on SIGTERM. Exits: 0 ok, 1
