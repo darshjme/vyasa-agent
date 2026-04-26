@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Deterministic checksum helper for Graphify nodes.
 
 The canonical form is ``sha256:<64-hex>``. The pre-hash input is a JSON
