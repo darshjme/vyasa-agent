@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Admin panel FastAPI app factory (design-06 §2, design-08 §7).
 
 :func:`create_app` wires the three runtime singletons (fleet manager, graph
