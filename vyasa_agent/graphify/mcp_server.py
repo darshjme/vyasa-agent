@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Graphify stdio MCP server — memory-fabric tool surface for the Vyasa fleet.
 
 Tools: ``graph_read``, ``graph_query``, ``graph_write``, ``graph_diff``.
