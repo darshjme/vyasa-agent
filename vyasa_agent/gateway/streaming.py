@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Shared helpers for streaming channel replies.
 
 Two small utilities used by channel adapters that want to render a reply as it
