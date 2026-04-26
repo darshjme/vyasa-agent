@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Abstract channel adapter contract.
 
 A channel adapter is the thin translation layer between a chat surface
