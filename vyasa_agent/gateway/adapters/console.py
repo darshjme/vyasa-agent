@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Stdin/stdout channel adapter — local testing without Telegram.
 
 Reads lines from stdin, builds InboundMessage, prints OutboundMessage replies.
