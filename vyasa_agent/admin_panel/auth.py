@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Auth primitives for the admin panel (design-06 §3).
 
 Two planes, never mixed:
