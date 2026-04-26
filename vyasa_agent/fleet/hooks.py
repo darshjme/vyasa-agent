@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Three-layer capability enforcement hooks.
 
 - **Layer A — Boot-time filter.** :func:`boot_tool_filter` trims a tool
