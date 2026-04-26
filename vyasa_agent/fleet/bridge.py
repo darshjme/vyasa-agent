@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """AgentRuntimeBridge — adapter between EmployeeActor and the vendored AIAgent.
 
 Lazy construction + Layer A boot filter + Layer B/C runtime hooks
