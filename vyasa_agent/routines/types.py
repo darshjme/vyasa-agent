@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Pydantic models for the routines layer.
 
 A ``Routine`` is the YAML-declared instruction — owner, schedule, prompt,
