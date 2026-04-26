@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Layer C — append-only audit sink for capability decisions.
 
 Every tool invocation (allow, deny, approve, expire) appends one
