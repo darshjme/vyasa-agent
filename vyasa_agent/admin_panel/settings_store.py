@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """SQLite-backed settings store (design-06 §5, design-08 §7).
 
 Single table ``settings`` keyed by dotted path (e.g. ``branding.product_name``).
