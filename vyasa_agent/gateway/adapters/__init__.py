@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Channel adapters: Telegram, WhatsApp, Slack, console, webhook."""
 
 from .base import ChannelAdapter, InboundHandler
