@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """SQLite-backed GraphStore for Graphify v2.
 
 The store uses the stdlib :mod:`sqlite3` module running under a single
