@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """RFC 7807 problem+json helpers for the admin panel."""
 
 from __future__ import annotations
