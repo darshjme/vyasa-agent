@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Vyasa 18-specialist prompt library.
 
 Verbatim PhD-level system prompts for the Vyasa registry (Tier 4 Control,
