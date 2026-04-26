@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Inbound message, dispatch, and handoff endpoints (design-06 §2 rows 1–3).
 
 Gateway-bearer protected. Handoffs enforce design-06 §4: when the downstream
