@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Capability matrix — per-employee tool-scope governance.
 
 Implements the per-employee capability enum, the decision enum, the
