@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Envato purchase-code verification (design-06 §2 row 10).
 
 Live verification hits ``https://api.envato.com/v3/market/author/sale``
