@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Graphify v2 — SQLite-backed fleet memory fabric.
 
 Public surface:
