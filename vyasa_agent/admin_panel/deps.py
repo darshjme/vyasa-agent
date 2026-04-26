@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """FastAPI dependency helpers shared by every router.
 
 Routers call :func:`get_fleet_manager`, :func:`get_graph_store`, and
