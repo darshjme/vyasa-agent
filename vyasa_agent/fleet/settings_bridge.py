@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """SettingsStore → FleetManager overlay bridge (design-06 §5, design-08 §7).
 
 The YAML tree (``vyasa.yaml`` + ``employees/*.yaml``) is the *ground truth*
