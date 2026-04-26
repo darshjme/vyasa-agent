@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Fleet runtime Pydantic models.
 
 These are the wire / in-process types exchanged between the gateway, the
