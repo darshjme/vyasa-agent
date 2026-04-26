@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """EmployeeActor — one asyncio coroutine per employee turn queue. Runtime skeleton
 only; the hermes AIAgent is not instantiated yet (see design-01 §3, design-02 §3,
 recon-04 §2)."""
