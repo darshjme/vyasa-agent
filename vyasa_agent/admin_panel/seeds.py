@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Default settings seeded on first boot (design-08 §7, design-06 §5).
 
 Every tunable visible in the Admin Panel lives here. Five sections:
