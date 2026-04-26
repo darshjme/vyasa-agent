@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Gateway transport types.
 
 Pydantic models that cross the channel-adapter boundary. These are deliberately
