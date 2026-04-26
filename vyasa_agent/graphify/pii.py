@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """PII redaction helpers for Graphify ingest.
 
 This module detects the PII classes Graymatter cares about in India-
