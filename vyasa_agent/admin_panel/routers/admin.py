@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Admin settings endpoints (design-06 §2 rows 8–9, design-08 §7).
 
 ``GET /v1/admin/settings``  — returns all rows grouped by section. Optional
