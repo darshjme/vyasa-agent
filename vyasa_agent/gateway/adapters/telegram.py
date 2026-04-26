@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Telegram channel adapter (polling, v0.1) with streaming-edit replies.
 
 Config via ``VYASA_TELEGRAM_BOT_TOKEN`` and optional ``VYASA_TELEGRAM_ALLOWLIST``.
