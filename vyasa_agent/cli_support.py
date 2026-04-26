@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Helpers that keep :mod:`vyasa_agent.cli` short and testable.
 
 This module centralises the bits of CLI plumbing that would otherwise bloat
