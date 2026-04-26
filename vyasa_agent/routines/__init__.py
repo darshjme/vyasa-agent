@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Routines — cron-scheduled and webhook-triggered tasks per employee.
 
 The routines layer discovers ``plans/<employee_id>/*.yaml`` at boot, parses
