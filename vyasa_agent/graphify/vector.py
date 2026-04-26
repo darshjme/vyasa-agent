@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Vector-store interface stub.
 
 The SQLite storage layer in this PR is intentionally self-sufficient.
