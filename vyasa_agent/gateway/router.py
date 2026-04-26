@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Gateway message router.
 
 Decision tree (per design-01 §5, design-06 §1):
