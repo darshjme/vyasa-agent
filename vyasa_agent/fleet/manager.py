@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """FleetManager — supervises N :class:`EmployeeActor` coroutines.
 
 Boot one-shot reads ``~/.vyasa/`` via :func:`vyasa_agent.fleet.descriptor.load_fleet`,
