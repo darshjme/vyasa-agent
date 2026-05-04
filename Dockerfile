@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 # Stage 1 — build: resolve + install deps into a self-contained venv with uv.
 # -----------------------------------------------------------------------------
-FROM ghcr.io/astral-sh/uv:0.11.6 AS builder
+FROM ghcr.io/astral-sh/uv:0.11.8 AS builder
 
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
