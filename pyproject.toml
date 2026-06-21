@@ -50,7 +50,7 @@ voice = [
     "numpy>=1.26,<3",
 ]
 admin = [
-    "starlette>=0.42.0,<1",
+    "starlette>=0.42.0,<2",
     "python-multipart>=0.0.12,<1",
     "itsdangerous>=2.2.0,<3",
 ]
