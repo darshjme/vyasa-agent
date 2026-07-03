@@ -1,11 +1,11 @@
-# Vyasa Agent — Capability Matrix (28 employees x 20 capabilities)
+# Vyasa Agent — Capability Matrix (29 employees x 20 capabilities)
 #
 # Source of truth for Kavach's per-employee tool-scope sandbox (design-04 §1).
 # Each cell: decision in {allow, deny, require_approval}, rationale <= 80 chars.
 #
 # Edit via PR only; changes trigger the SECURITY-APPROVED gate (design-04 §10).
 
-# --- 18 Vyasa mythic specialists ------------------------------------------
+# --- 19 Vyasa mythic specialists ------------------------------------------
 
 vyasa:
   fs_read:          { decision: allow,            rationale: "orchestrator reads roster + plans" }
@@ -623,4 +623,26 @@ dr-verma:
   pentest:          { decision: deny,             rationale: "security owned by Reddy + Kavach" }
   envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
   image_gen:        { decision: allow,            rationale: "social creatives + hero art" }
+  data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }
+
+dr-bose:
+  fs_read:          { decision: allow,            rationale: "compresses file reads into graph nodes" }
+  fs_write:         { decision: deny,             rationale: "writes go to the graph, not files" }
+  bash:             { decision: deny,             rationale: "graph ops never shell" }
+  git:              { decision: deny,             rationale: "not on the code path" }
+  docker:           { decision: deny,             rationale: "not on the infra path" }
+  web_fetch:        { decision: deny,             rationale: "graph work is local-only" }
+  web_search:       { decision: deny,             rationale: "graph work is local-only" }
+  gateway_telegram: { decision: deny,             rationale: "internal-only partner" }
+  gateway_whatsapp: { decision: deny,             rationale: "internal-only partner" }
+  gateway_slack:    { decision: deny,             rationale: "internal-only partner" }
+  delegate:         { decision: deny,             rationale: "single-seat memory role" }
+  spawn_subagent:   { decision: deny,             rationale: "single-seat memory role" }
+  code_exec:        { decision: deny,             rationale: "graph API only, never eval" }
+  vision:           { decision: deny,             rationale: "text-first graph pipeline" }
+  stt:              { decision: deny,             rationale: "text-first graph pipeline" }
+  tts:              { decision: deny,             rationale: "text-first graph pipeline" }
+  pentest:          { decision: deny,             rationale: "security owned by Kavach + Reddy" }
+  envato_verify:    { decision: deny,             rationale: "verify owned by Reddy" }
+  image_gen:        { decision: deny,             rationale: "out of scope for memory" }
   data_pipelines:   { decision: deny,             rationale: "owned by Aryabhata" }

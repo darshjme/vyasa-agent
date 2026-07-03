@@ -1,12 +1,12 @@
 # Fleet roster
 
-Twenty-eight employees. Each has a fixed scope, a fixed voice, and a fixed tool
+Twenty-nine partners. Each has a fixed scope, a fixed voice, and a fixed tool
 scope. The router never invents a generalist; every inbound message is pinned
 to exactly one of the names below.
 
 ---
 
-## Vyasa 18 — mythic specialists
+## Vyasa 19 — mythic specialists
 
 ### Tier 4 — Control
 
