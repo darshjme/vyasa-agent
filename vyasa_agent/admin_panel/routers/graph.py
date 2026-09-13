@@ -37,16 +37,12 @@ async def graph_query(
     _auth: dict[str, str] = Depends(require_admin),
     store: Any = Depends(get_graph_store),
 ) -> dict[str, Any]:
-    # TODO(Dharma HIGH): call signature is ``query(intent=..., k=...)`` but
-    # the real ``GraphStore.query`` takes a single ``QueryFilters`` arg and
-    # is async. Tests get by with duck-typed mocks; against the real store
-    # this endpoint TypeErrors. Reconcile to
-    # ``await store.query(QueryFilters(intent=..., limit=k))`` when the
-    # admin Memory Browser ships.
-    query_fn = getattr(store, "query", None)
-    if not callable(query_fn):
-        return {"nodes": []}
-    rows = query_fn(intent=intent, k=k) or []
+    from vyasa_agent.graphify.store import GraphStore
+    from vyasa_agent.graphify.types import QueryFilters
+    if isinstance(store, GraphStore):
+        rows = await store.query(QueryFilters(intent=intent, limit=k))
+    else:
+        rows = store.query(intent=intent, k=k) or []
     nodes = []
     for row in rows:
         if isinstance(row, dict):
@@ -78,6 +74,17 @@ async def create_graph_node(
     auth: dict[str, str] = Depends(require_admin),
     store: Any = Depends(get_graph_store),
 ) -> dict[str, Any]:
+    from vyasa_agent.graphify.store import GraphStore
+    from vyasa_agent.graphify.types import Node
+    if isinstance(store, GraphStore):
+        import uuid
+        node = Node(id=uuid.uuid4().hex, type="note", summary=body.summary,
+                    key_claims=body.key_claims, subject_tags=[body.intent],
+                    owner_employee_id=body.author_employee_id,
+                    source_path=body.source_refs[0] if body.source_refs else None,
+                    updated_by=auth.get("subject", "admin"))
+        await store.upsert_node(node)
+        return {"node_id": node.id, "version": 1}
     create_fn = getattr(store, "create_node", None)
     if not callable(create_fn):
         raise HTTPException(

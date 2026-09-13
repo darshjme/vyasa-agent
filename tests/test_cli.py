@@ -44,7 +44,7 @@ def test_version_prints_0_1_0a1(capture_stdout):
     rc = cli.main(["version"])
     assert rc == 0
     out = capture_stdout.getvalue().strip()
-    assert out == cli.VERSION == "0.1.0a1"
+    assert out == cli.VERSION == "0.2.0"
 
 
 def test_doctor_exits_zero_on_fresh_repo(capture_stdout):
@@ -114,59 +114,23 @@ def test_employee_enable_unknown_id(capture_stdout):
     assert "unknown employee id" in capture_stdout.getvalue()
 
 
-def test_gateway_serve_wires_fleet_manager(monkeypatch):
-    """``gateway serve`` should boot the fleet and install signal handlers.
-
-    We short-circuit the serve loop by making the graceful-shutdown event
-    fire immediately, and stub the FleetManager + adapters so no network
-    I/O runs.
-    """
-    booted: dict[str, object] = {}
-
-    class _StubGraphStore:
-        async def close(self) -> None: booted["graph_closed"] = True
-
-    class _StubFleet:
-        def __init__(self) -> None:
-            self.employee_ids: list[str] = []
-            self._shut = False
-        async def boot(self, root: Path) -> None:
-            booted["root"] = root
-            self.employee_ids = ["a", "b"]
-        async def shutdown(self) -> None:
-            self._shut = True
-
-    def _fake_create_app(fleet, graph_store, store):
-        booted["app_args"] = (fleet, graph_store, store)
-        return object()
-
-    def _fake_uvicorn(app, *, host, port, log_level="info"):
-        booted["uvicorn"] = (host, port)
-        return object(), lambda: booted.__setitem__("uvicorn_stopped", True)
-
-    # Point imports at stubs.
-    import vyasa_agent.fleet.manager as manager_mod
-    import vyasa_agent.graphify.store as graph_mod
-    import vyasa_agent.admin_panel.app as app_mod
-
-    monkeypatch.setattr(manager_mod, "FleetManager", _StubFleet)
-    monkeypatch.setattr(graph_mod, "GraphStore", _StubGraphStore)
-    monkeypatch.setattr(app_mod, "create_app", _fake_create_app)
-    monkeypatch.setattr(cli_support, "run_uvicorn_in_thread", _fake_uvicorn)
-
-    # Force the shutdown event to trip immediately after install.
-    original_install = cli_support.GracefulShutdown.install
-
-    def _install_and_trip(self):
-        original_install(self)
-        self.event.set()
-
-    monkeypatch.setattr(cli_support.GracefulShutdown, "install", _install_and_trip)
+def test_gateway_serve_wires_fleet_manager(monkeypatch, tmp_path):
+    """Real fleet and stores share the server loop and close cleanly."""
+    import uvicorn
+    observed = {}
+    monkeypatch.setenv("VYASA_HOME", str(tmp_path))
+    class Server:
+        def __init__(self, config):
+            self.config = config
+        async def serve(self):
+            app = self.config.app
+            service = app.state.fleet_manager
+            observed["service"] = service
+            assert len(service.directory()) == 29
+            assert service.is_alive("prometheus")
+            observed["port"] = self.config.port
+    monkeypatch.setattr(uvicorn, "Server", Server)
     monkeypatch.setattr(cli_support, "is_tty", lambda: False)
-
-    rc = cli.main(["gateway", "serve", "--bind", "127.0.0.1", "--port", "0"])
-    assert rc == 0
-    assert booted.get("uvicorn") == ("127.0.0.1", 0)
-    assert booted.get("uvicorn_stopped") is True
-    assert booted.get("graph_closed") is True
-    assert booted["root"] == Path(sys.modules["os"].environ["VYASA_FLEET_ROOT"])
+    assert cli.main(["gateway", "serve", "--port", "0"]) == 0
+    assert observed["port"] == 0
+    assert not observed["service"].is_alive("prometheus")

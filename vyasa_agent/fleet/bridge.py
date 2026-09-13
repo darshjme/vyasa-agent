@@ -17,6 +17,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+from vyasa_agent.paths import fleet_root
 from .audit import AuditSink
 from .capability import CapabilityMatrix
 from .descriptor import EmployeeDescriptor, FleetConfig
@@ -26,7 +27,7 @@ from .types import Turn, TurnResult
 
 logger = logging.getLogger("vyasa.fleet.bridge")
 
-_VENDOR_MODULE = "vyasa_internals"
+_VENDOR_MODULE = "vyasa_agent.runtime"
 DEFAULT_STATE_ROOT = Path.home() / ".vyasa" / "employees"
 
 
@@ -73,7 +74,7 @@ class AgentRuntimeBridge:
         session_db.parent.mkdir(parents=True, exist_ok=True)
 
         kwargs: dict[str, Any] = {
-            "ephemeral_system_prompt": resolve_prompt(self.descriptor.system_prompt_ref),
+            "ephemeral_system_prompt": resolve_prompt(self.descriptor.system_prompt_ref, fleet_root()),
             "enabled_toolsets": self._allowed_tools,
             "session_db": str(session_db),
             "log_prefix": f"vyasa.{self.descriptor.id}",
@@ -91,6 +92,8 @@ class AgentRuntimeBridge:
             kwargs["post_tool_call"] = self._wrap_post_hook()
             self._hook_mode = "kwarg"
 
+        if "employee_id" in sig_params:
+            kwargs.update(employee_id=self.descriptor.id, graph_client=self.graph_client)
         agent = ai_agent_cls(**kwargs)
         if self._hook_mode == "unwired":
             self._install_registry_wrap(agent, get_tool_definitions)
@@ -110,7 +113,11 @@ class AgentRuntimeBridge:
 
     async def turn(self, turn: Turn) -> TurnResult:
         agent = await self.ensure_agent()
-        result = agent.run_conversation(turn.text, session_id=turn.trace_id)
+        import hashlib
+        identity = "\0".join((turn.platform, turn.user_id, str(turn.metadata.get("chat_id", "")),
+                               str(turn.metadata.get("session_id", "default"))))
+        session_id = hashlib.sha256(identity.encode()).hexdigest()
+        result = agent.run_conversation(turn.text, session_id=session_id)
         if inspect.isawaitable(result):
             result = await result
         return TurnResult(

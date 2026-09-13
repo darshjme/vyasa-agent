@@ -26,6 +26,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 class Capability(str, Enum):  # noqa: UP042 — explicit (str, Enum) per spec
     """The 20 typed capabilities governed by the matrix."""
 
+    GRAPH_READ = "graph_read"
+    GRAPH_WRITE = "graph_write"
     FS_READ = "fs_read"
     FS_WRITE = "fs_write"
     BASH = "bash"
@@ -172,7 +174,7 @@ class CapabilityMatrix(BaseModel):
         Unknown employee id or unmapped capability both default to
         :attr:`Decision.DENY` so the runtime is closed-by-default.
         """
-        row = self.cells.get(employee_id)
+        row = self.cells.get(employee_id) or self.cells.get(employee_id.replace(".", "-"))
         if row is None:
             return Decision.DENY
         cell = row.get(capability)
@@ -182,7 +184,7 @@ class CapabilityMatrix(BaseModel):
 
     def explain(self, employee_id: str, capability: Capability) -> str:
         """Return the rationale string for the cell, for audit output."""
-        row = self.cells.get(employee_id)
+        row = self.cells.get(employee_id) or self.cells.get(employee_id.replace(".", "-"))
         if row is None:
             return f"unknown employee {employee_id!r}; default-deny"
         cell = row.get(capability)

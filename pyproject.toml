@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vyasa-agent"
-version = "0.1.0a1"
-description = "A 28-partner self-hosted agent fleet, addressable from your phone."
+version = "0.2.0"
+description = "A 29-partner self-hosted agent fleet, addressable from your phone."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
@@ -90,7 +90,7 @@ include = ["vyasa_agent*", "vyasa_internals*"]
 exclude = ["tests*"]
 
 [tool.setuptools.package-data]
-vyasa_agent = ["admin_panel/static/**/*", "graphify/schema/*.sql"]
+vyasa_agent = ["admin_panel/static/**/*", "graphify/schema/*.sql", "data/*.yaml", "data/employees/*.yaml"]
 vyasa_internals = ["NOTICE.md"]
 
 [tool.ruff]

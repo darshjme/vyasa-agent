@@ -71,7 +71,7 @@ def test_doctor_broken_capabilities_exits_two(
 
     from vyasa_agent import cli as cli_module
 
-    monkeypatch.setattr(cli_module.cli_support, "repo_root", lambda: fake_root)
+    monkeypatch.setenv("VYASA_FLEET_ROOT", str(fake_root))
 
     rc = cli_module.main(["doctor"])
     out = capsys.readouterr().out

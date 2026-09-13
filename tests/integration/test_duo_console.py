@@ -220,7 +220,8 @@ async def test_graceful_shutdown_drains_and_flushes(
 
     # state.db must exist for each actor that booted.  The FleetManager
     # writes the state tree under ``<fleet_root>/employees/state/<id>``.
-    state_root = fleet_root / "employees" / "state"
+    from vyasa_agent.paths import state_home
+    state_root = state_home() / "employees"
     dbs = list(state_root.glob("*/state.db"))
     assert dbs, f"no state.db under {state_root}"
     for db in dbs:

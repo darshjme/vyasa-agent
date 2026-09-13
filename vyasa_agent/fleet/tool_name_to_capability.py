@@ -19,6 +19,8 @@ from .capability import Capability
 # new tools land in the registry; the test suite asserts no capability is
 # silently orphaned.
 TOOL_TO_CAPABILITY: dict[str, Capability] = {
+    "graph_read": Capability.GRAPH_READ,
+    "graph_write": Capability.GRAPH_WRITE,
     # filesystem
     "file_read": Capability.FS_READ,
     "read_file": Capability.FS_READ,

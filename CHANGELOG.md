@@ -1,3 +1,12 @@
+# 0.2.0 — 2026-09-14
+
+- Replace the live placeholder with async provider inference and persistent isolated history.
+- Connect console, Telegram and HTTP requests to real fleet dispatch on one event loop.
+- Add authenticated DJCode directory/chat API and conversation-scoped graph tools.
+- Package all29 specialists, reconcile capability IDs, and add missing Dr. Bose policy.
+- Repair real graph routes, session-bound CSRF, Docker ports and writable state paths.
+- Validate actual fleet contracts and installed resources in addition to test doubles.
+
 # Changelog
 
 All notable changes to Vyasa Agent are documented here. Format follows

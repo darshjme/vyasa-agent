@@ -42,7 +42,7 @@ class InboundMessage(BaseModel):
     @property
     def binding_key(self) -> tuple[str, str]:
         """Sticky-binding key used by the router's short-lived affinity store."""
-        return (self.platform, self.platform_user_id)
+        return (f"{self.platform}:{self.platform_chat_id}", self.platform_user_id)
 
 
 class ReplyMarkup(BaseModel):

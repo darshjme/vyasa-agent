@@ -81,7 +81,7 @@ def audit_sink(tmp_path: Path) -> AuditSink:
 
 def test_matrix_loads_all_28_employees(matrix: CapabilityMatrix) -> None:
     employees = matrix.employees()
-    assert len(employees) == 28, employees
+    assert len(employees) == 29, employees
     # spot-check one from each registry
     assert "vyasa" in employees
     assert "prometheus" in employees

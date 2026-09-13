@@ -19,6 +19,7 @@ from vyasa_agent.fleet.capability import CapabilityMatrix
 from vyasa_agent.fleet.descriptor import EmployeeDescriptor, FleetConfig, load_fleet
 from vyasa_agent.fleet.settings_bridge import SettingsOverlay, apply_overlay
 from vyasa_agent.fleet.types import EmployeeHealth, Turn, TurnResult
+from vyasa_agent.paths import state_home
 
 logger = logging.getLogger("vyasa.fleet.manager")
 
@@ -83,7 +84,7 @@ class FleetManager:
             if matrix_path.exists():
                 matrix = CapabilityMatrix.load(matrix_path)
         if audit_sink is None:
-            audit_sink = AuditSink()
+            audit_sink = AuditSink(state_home() / "audit")
         self._matrix = matrix
         self._graph_client = graph_client
         self._audit_sink = audit_sink
@@ -94,7 +95,7 @@ class FleetManager:
             actor = EmployeeActor(
                 descriptor,
                 config,
-                state_root=root / "employees" / "state",
+                state_root=state_home() / "employees",
                 enabled=enabled,
                 matrix=matrix,
                 graph=graph_client,
@@ -274,6 +275,31 @@ class FleetManager:
 
     def directory(self) -> list[EmployeeHealth]:
         return [actor.health for actor in self._actors.values()]
+
+    def routing_directory(self):
+        from vyasa_agent.gateway.router import EmployeeDescriptor as DirectoryEntry
+        return [DirectoryEntry(
+            id=a.id, display_name=a.display_name,
+            aliases=tuple(alias.removeprefix("/ask ").lstrip("@") for alias in a.descriptor.messaging_aliases),
+            capabilities=tuple(a.descriptor.allowed_tools), enabled=a.enabled,
+        ) for a in self._actors.values()]
+
+    def is_alive(self, employee_id: str) -> bool:
+        actor = self.get(employee_id)
+        return actor is not None and actor.enabled and actor.health.state not in {"stopped", "errored"}
+
+    def status(self, employee_id: str):
+        actor = self.get(employee_id)
+        return actor.health if actor else None
+
+    def set_enabled(self, employee_id: str, enabled: bool, actor: str = "admin"):
+        target = self.get(employee_id)
+        if target is None:
+            return None
+        if self._overlay is not None:
+            self._overlay.store.set(f"fleet.employee.{employee_id}.enabled", enabled, user=actor, section="fleet")
+        target.set_enabled(enabled)
+        return enabled
 
     def get(self, employee_id: str) -> EmployeeActor | None:
         return self._actors.get(employee_id)

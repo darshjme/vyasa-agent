@@ -7,7 +7,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-04-17T05:49:20.989867Z"
+exclude-newer = "2026-09-06T23:01:15.525054Z"
 exclude-newer-span = "P7D"
 
 [[package]]
@@ -2377,7 +2377,7 @@ wheels = [
 
 [[package]]
 name = "vyasa-agent"
-version = "0.1.0a1"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "anthropic" },

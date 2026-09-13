@@ -269,7 +269,7 @@ class EmployeeActor:
             from vyasa_agent.fleet.bridge import AgentRuntimeBridge
             self._bridge = AgentRuntimeBridge(
                 self.descriptor, self.fleet_config, self.matrix,
-                self.graph, self.audit,
+                self.graph, self.audit, state_root=self._state_root,
             )
         return await self._bridge.turn(turn)
 

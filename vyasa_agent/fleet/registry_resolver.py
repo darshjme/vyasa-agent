@@ -80,7 +80,22 @@ def _resolve_vyasa(role_key: str) -> str:
 
 
 def _resolve_graymatter(role_key: str) -> str:
-    registry = _load_graymatter_registry()
+    try:
+        registry = _load_graymatter_registry()
+    except PromptResolutionError:
+        from vyasa_agent.paths import fleet_root
+        from .descriptor import load_fleet
+        matches = [d for d in load_fleet(fleet_root())[1]
+                   if d.registry_source == "graymatter" and d.role_key.lower() == role_key.lower()]
+        if not matches:
+            raise
+        d = matches[0]
+        return (f"You are {d.display_name}, the fleet's {d.role_key.replace('_', ' ')}. "
+                "These are specialist personas, not claims of human credentials. "
+                "Answer precisely, distinguish evidence from assumptions, and admit uncertainty. "
+                "Never claim tools ran or changes were made without tool results. "
+                f"Your assigned scope includes: {', '.join(d.allowed_tools)}. "
+                "Use only the tools actually supplied in this session.")
     agents = registry.AGENTS
     role_enum = registry.AgentRole
 

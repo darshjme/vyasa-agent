@@ -20,7 +20,7 @@ from typing import Protocol, runtime_checkable
 from .types import HandoffRequest, InboundMessage
 
 DEFAULT_TECHNICAL_ORCHESTRATOR = "vyasa"
-DEFAULT_PRODUCT_ORCHESTRATOR = "dr-sarabhai"
+DEFAULT_PRODUCT_ORCHESTRATOR = "dr.sarabhai"
 
 _TECH_KEYWORDS = frozenset(
     {"build", "refactor", "debug", "deploy", "pentest", "test", "lint", "trace", "migrate", "rollback"}
@@ -118,7 +118,7 @@ class AliasResolver:
     def _rebuild_sync(self) -> None:
         alias_map: dict[str, str] = {}
         enabled: set[str] = set()
-        for emp in self._fleet.directory():
+        for emp in getattr(self._fleet, "routing_directory", self._fleet.directory)():
             if not emp.enabled:
                 continue
             enabled.add(emp.id)
@@ -189,9 +189,10 @@ class MessageRouter:
         product_hit = any(kw in lowered for kw in _PRODUCT_KEYWORDS)
         preferred = self._product_orchestrator if (product_hit and not tech_hit) else self._technical_orchestrator
         for candidate in (preferred, self._technical_orchestrator, self._product_orchestrator):
+            candidate = self._aliases.resolve(candidate) or candidate
             if self._aliases.is_enabled(candidate) and self._fleet.is_alive(candidate):
                 return candidate
-        for emp in self._fleet.directory():
+        for emp in getattr(self._fleet, "routing_directory", self._fleet.directory)():
             if emp.enabled and self._fleet.is_alive(emp.id):
                 return emp.id
         raise RuntimeError("no employees available to route message")
@@ -200,7 +201,7 @@ class MessageRouter:
         """Validate a handoff target: exists, enabled, capability-fit."""
         target_id = request.to_employee_id
         descriptor = next(
-            (e for e in self._fleet.directory() if e.id == target_id), None
+            (e for e in getattr(self._fleet, "routing_directory", self._fleet.directory)() if e.id == target_id), None
         )
         if descriptor is None or not descriptor.enabled:
             raise UnknownEmployeeError(f"unknown or disabled employee id: {target_id!r}")

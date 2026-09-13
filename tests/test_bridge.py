@@ -77,7 +77,7 @@ def _install_fake_internals(monkeypatch: pytest.MonkeyPatch) -> types.ModuleType
     ]
     mod.set_session_context = lambda **kwargs: None  # type: ignore[attr-defined]
     mod.run_conversation = lambda *a, **k: None  # type: ignore[attr-defined]
-    monkeypatch.setitem(sys.modules, "vyasa_internals", mod)
+    monkeypatch.setitem(sys.modules, "vyasa_agent.runtime", mod)
     _FakeAIAgent.instances.clear()
     _FakeAIAgent.dispatch_calls.clear()
     return mod

@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import hashlib
 import hmac
-import secrets
 import time
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -100,11 +99,7 @@ class SessionAuth:
     avoid ``itsdangerous`` as a hard dependency — the extra ``admin`` group
     pulls it in, but the base install works without.
 
-    TODO(Dharma HIGH): bind the CSRF token to the session subject via HMAC
-    (``csrf = HMAC(secret, subject||issued_at)``) so a cookie-tossing or
-    XSS-on-a-sibling-subdomain attacker cannot forge a valid pair. The
-    current double-submit only compares cookie to header, which is the
-    weak variant of the pattern.
+    CSRF values are HMAC-bound to the signed session identity and timestamp.
     """
 
     def __init__(
@@ -126,7 +121,7 @@ class SessionAuth:
         payload = f"{subject}.{issued_at}"
         sig = self._sign(payload)
         session_cookie = f"{payload}.{sig}"
-        csrf_token = secrets.token_urlsafe(32)
+        csrf_token = self._sign("csrf." + payload)
         return session_cookie, csrf_token
 
     # ---- verifying ------------------------------------------------------
@@ -173,7 +168,8 @@ class SessionAuth:
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="csrf token required",
                 )
-            if not hmac.compare_digest(csrf_cookie, csrf_header):
+            if not (hmac.compare_digest(csrf_cookie, csrf_header) and
+                    hmac.compare_digest(csrf_header, self._sign(f"csrf.{subject}.{issued_at}"))):
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="csrf token mismatch",

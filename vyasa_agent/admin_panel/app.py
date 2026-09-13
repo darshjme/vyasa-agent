@@ -34,6 +34,7 @@ from .routers import employees as employees_router
 from .routers import graph as graph_router
 from .routers import license as license_router
 from .routers import messages as messages_router
+from .routers import fleet as fleet_router
 from .seeds import DEFAULTS
 from .settings_store import SettingsStore
 
@@ -136,6 +137,7 @@ def create_app(
     app.add_exception_handler(Exception, unhandled_exception_handler)
 
     app.include_router(messages_router.router)
+    app.include_router(fleet_router.router)
     app.include_router(employees_router.router)
     app.include_router(graph_router.router)
     app.include_router(admin_router.router)

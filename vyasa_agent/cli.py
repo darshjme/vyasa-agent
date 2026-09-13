@@ -17,7 +17,7 @@ from rich.console import Console
 
 from . import cli_support
 
-VERSION = "0.1.0a1"
+VERSION = "0.2.0"
 DEFAULT_BIND = "127.0.0.1"
 DEFAULT_PORT = 19000
 _EXPECTED_EMPLOYEE_COUNT = 29
@@ -28,13 +28,14 @@ def _stdout() -> Console:
     return Console()
 
 def _default_fleet_root() -> Path:
-    root = os.environ.get("VYASA_FLEET_ROOT")
-    return Path(root).expanduser().resolve() if root else cli_support.repo_root()
+    from .paths import fleet_root
+    return fleet_root()
 
 
 def _settings_store(path: Path | None = None) -> Any:
     from .admin_panel.settings_store import SettingsStore
-    target = path or Path.home() / ".vyasa" / "settings.sqlite"
+    from .paths import state_home
+    target = path or state_home() / "settings.sqlite"
     target.parent.mkdir(parents=True, exist_ok=True)
     return SettingsStore(target)
 
@@ -163,50 +164,38 @@ class _GatewayCommands:
 
 
 async def _serve(*, bind: str, port: int, telegram: bool, console: bool) -> None:
+    import uvicorn
     from .admin_panel.app import create_app
     from .fleet.manager import FleetManager
+    from .gateway.service import GatewayService
     from .gateway.adapters.console import ConsoleAdapter
     from .graphify.store import GraphStore
-    log = logging.getLogger("vyasa.cli")
-    shutdown = cli_support.GracefulShutdown()
-    shutdown.install()
+    from .paths import state_home
     fleet = FleetManager()
-    await fleet.boot(_default_fleet_root())
-    log.info("gateway.fleet_booted", extra={"employees": len(fleet.employee_ids)})
-    graph_store = GraphStore()
-    app = create_app(fleet, graph_store, _settings_store())
-    _, stop_uvicorn = cli_support.run_uvicorn_in_thread(app, host=bind, port=port)
-    log.info("gateway.admin_ready", extra={"bind": bind, "port": port})
-
-    adapters: list[Any] = []
-    if console:
-        c = ConsoleAdapter(); c.bind_inbound(_inbound_handler()); await c.start(); adapters.append(c)
-    if telegram:
-        from .gateway.adapters.telegram import TelegramAdapter
-        tg = TelegramAdapter(); tg.bind_inbound(_inbound_handler()); await tg.start(); adapters.append(tg)
-    if not console:
-        log.info("gateway.ready_headless")
-
+    settings = _settings_store()
+    graph = GraphStore(state_home() / "graph.sqlite")
+    adapters = []
     try:
-        await shutdown.wait()
-    finally:
-        log.info("gateway.shutdown.begin")
+        await fleet.boot(_default_fleet_root(), settings_store=settings, graph_client=graph)
+        service = GatewayService(fleet)
+        app = create_app(service, graph, settings)
+        if console:
+            adapters.append(ConsoleAdapter())
+        if telegram:
+            from .gateway.adapters.telegram import TelegramAdapter
+            adapters.append(TelegramAdapter())
         for adapter in adapters:
-            try: await adapter.stop()
-            except Exception as exc:  # pragma: no cover
-                log.warning("gateway.adapter.stop_failed", extra={"err": str(exc)})
-        try: await asyncio.wait_for(fleet.shutdown(), timeout=cli_support.DEFAULT_SHUTDOWN_TIMEOUT_S)
-        except TimeoutError: log.warning("gateway.shutdown.timeout")
-        await graph_store.close()
-        stop_uvicorn()
-        log.info("gateway.shutdown.complete")
-
-
-def _inbound_handler():
-    async def _handler(msg: Any) -> None:
-        logging.getLogger("vyasa.cli").info("gateway.inbound",
-            extra={"trace_id": getattr(msg, "trace_id", None)})
-    return _handler
+            adapter.bind_inbound(service.handler(adapter))
+            await adapter.start()
+        # All requests and actor queues share one event loop.
+        server = uvicorn.Server(uvicorn.Config(app, host=bind, port=port, log_level="info"))
+        await server.serve()
+    finally:
+        for adapter in adapters:
+            await adapter.stop()
+        await fleet.shutdown()
+        await graph.close()
+        settings.close()
 
 
 class VyasaCLI:
@@ -216,6 +205,19 @@ class VyasaCLI:
         self.gateway = _GatewayCommands()
         self.employee = _EmployeeCommands()
         self.graph = _GraphCommands()
+
+    def token(self) -> None:
+        """Create a gateway token. Store the output securely for DJCode clients."""
+        import secrets
+        store = _settings_store()
+        try:
+            token = "vya_live_" + secrets.token_urlsafe(32)
+            rows = store.get("channels.gateway.tokens") or []
+            rows.append({"token": token, "scope": "adapter", "label": "djcode"})
+            store.set("channels.gateway.tokens", rows, user="cli", section="channels")
+            print(token)
+        finally:
+            store.close()
 
     def version(self) -> None:
         """Print the CLI version."""
@@ -237,12 +239,12 @@ def _run_doctor_checks() -> list[tuple[str, bool, str]]:
     except Exception as exc:  # pragma: no cover
         out.append(("runtime importable", False, str(exc)))
     try:
-        import yaml
-        data = yaml.safe_load((cli_support.repo_root() / "capabilities.yaml").read_text("utf-8")) or {}
+        from .fleet.capability import CapabilityMatrix
+        data = CapabilityMatrix.load(_default_fleet_root() / "capabilities.yaml").cells
         out.append(("capabilities.yaml", True, f"{len(data)} employees defined"))
     except Exception as exc:
         out.append(("capabilities.yaml", False, str(exc)))
-    yamls = sorted((cli_support.repo_root() / "employees").glob("*.yaml"))
+    yamls = sorted((_default_fleet_root() / "employees").glob("*.yaml"))
     ok = len(yamls) == _EXPECTED_EMPLOYEE_COUNT
     out.append(("employees/*.yaml", ok, f"{len(yamls)}/{_EXPECTED_EMPLOYEE_COUNT} descriptors"))
     try:
