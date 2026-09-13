@@ -44,7 +44,7 @@ def test_version_prints_0_1_0a1(capture_stdout):
     rc = cli.main(["version"])
     assert rc == 0
     out = capture_stdout.getvalue().strip()
-    assert out == cli.VERSION == "0.2.0"
+    assert out == cli.VERSION == "0.2.1"
 
 
 def test_doctor_exits_zero_on_fresh_repo(capture_stdout):

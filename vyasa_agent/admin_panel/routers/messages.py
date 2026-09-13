@@ -8,6 +8,7 @@ side effect is persisted.
 from __future__ import annotations
 
 import uuid
+import hashlib
 from datetime import datetime, timezone
 from typing import Any
 
@@ -77,7 +78,7 @@ async def inbound_message(
     route_fn = getattr(fleet, "route_message", None)
     if callable(route_fn):
         try:
-            dispatched_to = await _maybe_await(route_fn(body.model_dump(), trace_id=trace_id))
+            dispatched_to = await _maybe_await(route_fn({**body.model_dump(), "sender": hashlib.sha256(request.headers["authorization"].encode()).hexdigest() + ":" + body.sender}, trace_id=trace_id))
         except Exception as exc:  # noqa: BLE001
             raise HTTPException(503, detail="routing unavailable") from exc
     return {"message_id": f"msg_{uuid.uuid4().hex[:18]}", "dispatched_to": dispatched_to,
@@ -102,7 +103,8 @@ async def dispatch(
     if callable(dispatch_fn):
         outcome = await _maybe_await(
             dispatch_fn(
-                employee_id=employee_id, intent=body.intent, payload=body.payload,
+                employee_id=employee_id, intent=body.intent, payload={**body.payload,
+                    "user_id": hashlib.sha256(request.headers["authorization"].encode()).hexdigest()},
                 context_node_ids=body.context_node_ids,
                 idempotency_key=body.idempotency_key, trace_id=trace_id,
             )

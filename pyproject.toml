@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vyasa-agent"
-version = "0.2.0"
+version = "0.2.1"
 description = "A 29-partner self-hosted agent fleet, addressable from your phone."
 readme = "README.md"
 requires-python = ">=3.11"

@@ -17,7 +17,7 @@ from rich.console import Console
 
 from . import cli_support
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 DEFAULT_BIND = "127.0.0.1"
 DEFAULT_PORT = 19000
 _EXPECTED_EMPLOYEE_COUNT = 29

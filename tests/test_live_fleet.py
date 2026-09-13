@@ -173,3 +173,12 @@ async def test_memory_tool_scoping_and_persistence(tmp_path, monkeypatch):
     assert len(await agent._memory_tool("graph_read", {"query": "blue"}, "session-a")) == 1
     assert await agent._memory_tool("graph_read", {"query": "blue"}, "session-b") == []
     await graph.close()
+
+
+async def test_legacy_dispatch_tokens_do_not_share_history(running):
+    client, requests, _, _ = running
+    body = {"intent": "review", "payload": {"text": "first", "user_id": "spoof"}}
+    await client.post("/v1/dispatch/prometheus", json=body)
+    await client.post("/v1/dispatch/prometheus", json=body,
+                      headers={"Authorization": "Bearer vya_live_other"})
+    assert len(requests[-1]["messages"]) == 2

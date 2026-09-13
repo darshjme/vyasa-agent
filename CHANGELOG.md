@@ -1,3 +1,7 @@
+# 0.2.1 — 2026-09-14
+
+- Bind legacy HTTP message and dispatch conversation identities to authenticated tokens.
+
 # 0.2.0 — 2026-09-14
 
 - Replace the live placeholder with async provider inference and persistent isolated history.
